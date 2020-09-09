@@ -48,12 +48,17 @@ export default {
     Add,
     FriendApply
   },
+  props: {
+    isOnline: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       showCutter: false,
       nickname: userInfo.nickname,
-      avatarSrc: '',
-      isOnline: false
+      avatarSrc: ''
     }
   },
   mounted() {

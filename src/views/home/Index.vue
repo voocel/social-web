@@ -1,7 +1,7 @@
 <template>
   <el-container class="main" :style="{ height: fullHeight + 'px' }">
     <el-header>
-      <headers />
+      <headers :is-online="socketStatus" />
     </el-header>
     <el-container>
       <el-aside class="menu" width="65px">
