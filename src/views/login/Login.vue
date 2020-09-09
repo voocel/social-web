@@ -10,18 +10,18 @@
             :size="100"
             :lighten="180"
             :username="username"
-          ></avatar>
-          <img v-else src="../../assets/images/avatar.png" width="30%" alt />
+          />
+          <img v-else src="../../assets/images/avatar.png" width="30%" alt>
         </div>
         <form>
-          <input type="text" placeholder="用户名" v-model="username" />
-          <input type="password" placeholder="密码" v-model="password" />
+          <input v-model="username" type="text" placeholder="用户名">
+          <input v-model="password" type="password" placeholder="密码">
           <input
             type="button"
-            @click="login"
             style="cursor:pointer"
             value="登录"
-          />
+            @click="login"
+          >
           <router-link to="/register">
             <el-button size="mini" type="text">点击注册</el-button>
           </router-link>
@@ -32,19 +32,19 @@
 </template>
 
 <script>
-import storage from "@/common/storage";
+import storage from '@/common/storage'
 
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
     return {
-      username: "",
-      password: ""
-    };
+      username: '',
+      password: ''
+    }
   },
   methods: {
     login() {
-      if (this.username !== "" && this.password !== "") {
+      if (this.username !== '' && this.password !== '') {
         this.$api.user
           .login({
             username: this.username,
@@ -53,33 +53,33 @@ export default {
           .then(res => {
             if (res) {
               if (res.data.code === 200) {
-                let data = {
+                const data = {
                   uid: res.data.result.id,
                   username: res.data.result.username,
                   nickname: res.data.result.nickname,
                   avatar: res.data.result.avatar
-                };
-                storage.set(storage.USER_INFO, JSON.stringify(data));
-                storage.set(storage.USER_TOKEN, res.data.result.access_token);
-                this.$router.push("/");
+                }
+                storage.set(storage.USER_INFO, JSON.stringify(data))
+                storage.set(storage.USER_TOKEN, res.data.result.access_token)
+                this.$router.push('/')
               } else {
                 this.$message({
                   message: res.data.msg,
-                  type: "error"
-                });
+                  type: 'error'
+                })
               }
             }
-          });
+          })
       } else {
-        const message = this.username === "" ? "请输入用户名" : "请输入密码";
+        const message = this.username === '' ? '请输入用户名' : '请输入密码'
         this.$message({
           message: message,
-          type: "warn"
-        });
+          type: 'warn'
+        })
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

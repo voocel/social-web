@@ -5,13 +5,13 @@
         <div class="to-name">{{ curNickname }}</div>
       </el-header>
       <el-main v-chat-scroll>
-        <chat-box :msgDatas="records"></chat-box>
+        <chat-box :msg-datas="records" />
       </el-main>
       <el-footer>
         <el-row>
           <div class="chat-footer">
             <div class="action">
-              <span class="emoji" v-watchMouse="showEmoji">
+              <span v-watchMouse="showEmoji" class="emoji">
                 <!-- <icon
                   name="biaoqing1"
                   @clickIcon="showEmoji.f = !showEmoji.f"
@@ -20,11 +20,11 @@
                 ></icon>-->
                 <span @click="showEmoji.f = !showEmoji.f">😄</span>
                 <el-collapse-transition>
-                  <div class="emoji-container" v-show="showEmoji.f">
+                  <div v-show="showEmoji.f" class="emoji-container">
                     <emoji
                       @chooseEmoji="chooseEmoji"
                       @chooseEmojiDefault="chooseEmojiDefault"
-                    ></emoji>
+                    />
                   </div>
                 </el-collapse-transition>
               </span>
@@ -36,23 +36,25 @@
               </span>
               <!-- <span class="photo"><i class="el-icon-picture-outline"></i></span> -->
               <span class="more">
-                <i class="el-icon-circle-plus-outline"></i>
+                <i class="el-icon-circle-plus-outline" />
               </span>
             </div>
             <el-input
+              v-model="inputData"
               class="content"
               type="textarea"
               :autosize="{ minRows: 6, maxRows: 10 }"
               placeholder="请输入内容"
-              @keyup.enter.native="send"
               maxlength="60"
               show-word-limit
-              v-model="inputData"
-            ></el-input>
+              @keyup.enter.native="send"
+            />
             <div class="send-btn">
-              <el-button @click="send" type="success" size="small"
-                >发送</el-button
-              >
+              <el-button
+                type="success"
+                size="small"
+                @click="send"
+              >发送</el-button>
             </div>
           </div>
         </el-row>
@@ -62,84 +64,84 @@
 </template>
 
 <script>
-import ChatBox from "@/components/ChatBox";
+import ChatBox from '@/components/ChatBox'
 // import Icon from "@/components/Icon";
-import Emoji from "@/components/Emoji";
-import storage from "@/common/storage";
-var userInfo = JSON.parse(storage.get(storage.USER_INFO));
+import Emoji from '@/components/Emoji'
+import storage from '@/common/storage'
+var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
-  name: "Chat",
-  data() {
-    return {
-      inputData: "",
-      curChatNickname: "",
-      showEmoji: { f: false }
-    };
-  },
+  name: 'Chat',
   components: {
     ChatBox,
     // Icon,
     Emoji
   },
+  data() {
+    return {
+      inputData: '',
+      curChatNickname: '',
+      showEmoji: { f: false }
+    }
+  },
   computed: {
     records() {
-      return this.$store.state.msgData;
+      return this.$store.state.msgData
     },
     curNickname() {
       if (this.$store.state.curSelected) {
-        return this.$store.state.curSelected["nickname"];
+        return this.$store.state.curSelected['nickname']
       } else {
-        return "";
+        return ''
       }
     }
   },
   methods: {
     send() {
-      if (this.inputData == "") {
-        this.$message.error("消息不能为空");
-        return;
+      if (this.inputData === '') {
+        this.$message.error('消息不能为空')
+        return
       }
-      let pushData = {
+      const pushData = {
         nickname: userInfo.nickname,
         uid: userInfo.uid,
         avatar: userInfo.avatar,
         content: this.inputData,
         self: true,
         timeline: this.common.getCurTime()
-      };
-      this.$store.commit("pushMsg", pushData);
-      let toUinfo = this.$store.state.curSelected;
+      }
+      this.$store.commit('pushMsg', pushData)
+      const toUinfo = this.$store.state.curSelected
       if (!toUinfo) {
-        this.$message.error("请先选择发送的用户");
-        return;
+        this.$message.error('请先选择发送的用户')
+        return
       }
       const sendData = {
-        cmd: "chat",
-        seq: "xyz",
+        cmd: 'chat',
+        seq: 'xyz',
         param: {
-          type: "msg",
+          type: 'msg',
           uid: parseInt(userInfo.uid),
           touid: toUinfo.uid,
           content: this.inputData
         }
-      };
-      this.$emit("childSend", JSON.stringify(sendData));
-      this.recordMsg(this.inputData, toUinfo.uid);
-      this.recordAlive(toUinfo, this.inputData);
-      this.inputData = "";
+      }
+      this.$emit('childSend', JSON.stringify(sendData))
+      this.recordMsg(this.inputData, toUinfo.uid)
+      this.recordAlive(toUinfo, this.inputData)
+      this.inputData = ''
     },
-    //聚焦输入框
+    // 聚焦输入框
     focusTxtContent() {
-      document.querySelector("#txtContent input").focus();
+      document.querySelector('#txtContent input').focus()
     },
     recordMsg(content, toUid) {
-      let msgkey = "msg_" + userInfo.uid + "_" + toUid;
-      let data = storage.get(msgkey);
+      const msgkey = 'msg_' + userInfo.uid + '_' + toUid
+      let data = storage.get(msgkey)
       if (!data) {
-        data = [];
+        data = []
       } else {
-        data = JSON.parse(data);
+        data = JSON.parse(data)
       }
       data.push({
         uid: userInfo.uid,
@@ -148,14 +150,14 @@ export default {
         content: content,
         self: true,
         timeline: this.common.getCurTime()
-      });
-      storage.set(msgkey, JSON.stringify(data));
+      })
+      storage.set(msgkey, JSON.stringify(data))
     },
     recordAlive(Uinfo, lasgMsg) {
-      let aliveList = this.$store.state.aliveList;
-      let unread = "";
+      let aliveList = this.$store.state.aliveList
+      const unread = ''
       if (!aliveList) {
-        aliveList = {};
+        aliveList = {}
       }
       aliveList[Uinfo.uid] = {
         to_id: Uinfo.uid,
@@ -164,20 +166,20 @@ export default {
         last_msg: lasgMsg,
         last_time: this.common.getCurTime(1),
         unread: unread
-      };
-      this.$store.commit("setAliveList", aliveList);
+      }
+      this.$store.commit('setAliveList', aliveList)
     },
     chooseEmojiDefault(em) {
-      this.inputData += em;
-      console.log(em);
-      this.showEmoji.f = false;
+      this.inputData += em
+      console.log(em)
+      this.showEmoji.f = false
     },
     chooseEmoji(url) {
-      console.log(url);
-      this.showEmoji.f = false;
+      console.log(url)
+      this.showEmoji.f = false
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

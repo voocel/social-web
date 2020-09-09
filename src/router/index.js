@@ -1,18 +1,18 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 const routes = [
   {
-    path: "/",
-    name: "Home",
-    component: () => import("@/views/home/Index.vue"),
+    path: '/',
+    name: 'Home',
+    component: () => import('@/views/home/Index.vue'),
     children: [
       {
-        path: "/chat",
-        name: "chat",
-        component: () => import("@/views/home/components/Chat"),
+        path: '/chat',
+        name: 'chat',
+        component: () => import('@/views/home/components/Chat'),
         meta: {
           requiresAuth: false
         }
@@ -20,25 +20,25 @@ const routes = [
     ]
   },
   {
-    path: "/login",
-    name: "Login",
-    component: () => import("@/views/login/Login"),
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/login/Login'),
     meta: {
       requiresAuth: false
     }
   },
   {
-    path: "/register",
-    name: "Register",
-    component: () => import("@/views/login/Register"),
+    path: '/register',
+    name: 'Register',
+    component: () => import('@/views/login/Register'),
     meta: {
       requiresAuth: false
     }
   }
-];
+]
 
 const router = new VueRouter({
   routes
-});
+})
 
-export default router;
+export default router

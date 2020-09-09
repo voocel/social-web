@@ -10,19 +10,19 @@
             :size="100"
             :lighten="90"
             :username="username"
-          ></avatar>
-          <img v-else src="../../assets/images/avatar.png" width="30%" alt />
+          />
+          <img v-else src="../../assets/images/avatar.png" width="30%" alt>
         </div>
 
         <form>
-          <input type="text" v-model="username" placeholder="用户名" />
-          <input type="password" v-model="password" placeholder="密码" />
+          <input v-model="username" type="text" placeholder="用户名">
+          <input v-model="password" type="password" placeholder="密码">
           <input
             type="button"
-            @click="register"
             style="cursor:pointer"
             value="注册"
-          />
+            @click="register"
+          >
           <router-link to="/login">
             <el-button size="mini" type="text">点击登陆</el-button>
           </router-link>
@@ -34,16 +34,16 @@
 
 <script>
 export default {
-  name: "Register",
+  name: 'Register',
   data() {
     return {
-      username: "",
-      password: ""
-    };
+      username: '',
+      password: ''
+    }
   },
   methods: {
     register() {
-      if (this.username !== "" && this.password !== "") {
+      if (this.username !== '' && this.password !== '') {
         this.$api.user
           .register({
             username: this.username,
@@ -53,27 +53,27 @@ export default {
             if (res) {
               if (res.data.code === 200) {
                 this.$message({
-                  message: "注册成功",
-                  type: "success"
-                });
+                  message: '注册成功',
+                  type: 'success'
+                })
               } else {
                 this.$message({
                   message: res.data.msg,
-                  type: "error"
-                });
+                  type: 'error'
+                })
               }
             }
-          });
+          })
       } else {
-        const message = this.username === "" ? "请输入用户名" : "请输入密码";
+        const message = this.username === '' ? '请输入用户名' : '请输入密码'
         this.$message({
           message: message,
-          type: "warn"
-        });
+          type: 'warn'
+        })
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

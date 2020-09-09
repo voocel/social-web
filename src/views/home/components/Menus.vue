@@ -7,17 +7,17 @@
     <el-menu
       default-active="1"
       class="el-menu-vertical-demo"
+      :collapse="isCollapse"
       @open="handleOpen"
       @close="handleClose"
-      :collapse="isCollapse"
     >
       <el-menu-item index="1">
-        <i class="el-icon-chat-dot-square"></i>
+        <i class="el-icon-chat-dot-square" />
         <span slot="title">会话</span>
       </el-menu-item>
       <el-submenu index="2">
         <template slot="title">
-          <i class="el-icon-menu"></i>
+          <i class="el-icon-menu" />
           <span slot="title">导航二</span>
         </template>
         <el-menu-item-group>
@@ -34,7 +34,7 @@
         </el-submenu>
       </el-submenu>
       <el-menu-item index="3">
-        <i class="el-icon-setting"></i>
+        <i class="el-icon-setting" />
         <span slot="title">设置</span>
       </el-menu-item>
     </el-menu>
@@ -42,31 +42,31 @@
 </template>
 
 <script>
-import storage from "@/common/storage";
-var userInfo = JSON.parse(storage.get(storage.USER_INFO));
+import storage from '@/common/storage'
+var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
-  name: "Menus",
+  name: 'Menus',
   data() {
     return {
       isCollapse: true,
       showCutter: false,
       nickname: userInfo.nickname,
-      avatarSrc: ""
-    };
+      avatarSrc: ''
+    }
   },
   created() {
-    this.avatarSrc = userInfo.avatar;
+    this.avatarSrc = userInfo.avatar
   },
   methods: {
     handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+      console.log(key, keyPath)
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath);
+      console.log(key, keyPath)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

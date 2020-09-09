@@ -1,7 +1,7 @@
 <template>
   <div class="chat-content">
     <ul>
-      <li class="content-item" v-for="(item, index) in msgDatas" :key="index">
+      <li v-for="(item, index) in msgDatas" :key="index" class="content-item">
         <div class="msg-date">{{ item.timeline }}</div>
         <div v-if="item.self">
           <div class="msg-from self-msg-from">
@@ -12,10 +12,10 @@
               :size="36"
               :lighten="60"
               :username="item.nickname"
-            ></avatar>
-            <img v-else class="uinfo-avatar" :src="avatarSrc" alt />
+            />
+            <img v-else class="uinfo-avatar" :src="avatarSrc" alt>
           </div>
-          <div class="clear"></div>
+          <div class="clear" />
           <div class="msg-content self-msg-content">{{ item.content }}</div>
         </div>
 
@@ -28,38 +28,41 @@
               :size="36"
               :lighten="60"
               :username="item.nickname"
-            ></avatar>
-            <img v-else class="uinfo-avatar" :src="item.avatar" alt />
+            />
+            <img v-else class="uinfo-avatar" :src="item.avatar" alt>
             <span class="msg-author">{{ item.nickname }}</span>
             <span class="loc">[上海]</span>
           </div>
-          <div class="clear"></div>
+          <div class="clear" />
           <div class="msg-content other-msg-content">{{ item.content }}</div>
         </div>
-        <div class="clear"></div>
+        <div class="clear" />
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import storage from "@/common/storage";
-var userInfo = JSON.parse(storage.get(storage.USER_INFO));
+import storage from '@/common/storage'
+var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
-  name: "ChatBox",
+  name: 'ChatBox',
   props: {
-    msgDatas: Array
+    msgDatas: {
+      type: Array,
+      default: () => {}
+    }
   },
   data() {
     return {
-      avatarSrc: ""
-    };
+      avatarSrc: ''
+    }
   },
   created() {
-    this.avatarSrc = userInfo.avatar;
+    this.avatarSrc = userInfo.avatar
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -3,10 +3,10 @@
     <ul>
       <router-link to="/chat">
         <li
-          class="friends-item"
-          :class="{ active: activeClass == index }"
           v-for="(item, index) in friendsData"
           :key="index"
+          class="friends-item"
+          :class="{ active: activeClass == index }"
           @click="selectFriend(index, item)"
         >
           <el-row>
@@ -17,7 +17,7 @@
                   :size="36"
                   :lighten="60"
                   :username="item.nickname"
-                ></avatar>
+                />
               </div>
             </el-col>
             <el-col :span="20">
@@ -31,38 +31,41 @@
 </template>
 
 <script>
-import storage from "@/common/storage";
-var userInfo = JSON.parse(storage.get(storage.USER_INFO));
+import storage from '@/common/storage'
+var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
-  name: "Friend",
+  name: 'Friend',
+  props: {
+    friendsData: {
+      type: Array,
+      default: () => {}
+    }
+  },
   data() {
     return {
       activeClass: -1
-    };
-  },
-  props: {
-    friendsData: Array
+    }
   },
   methods: {
     selectFriend(index, uinfo) {
-      this.$store.commit("clearMsg");
-      this.activeClass = index;
-      let localMsg = this.getRecord(uinfo.friend_id);
-      this.$store.commit("pushMsg", localMsg);
-      this.$store.commit("setCurSelectUser", {
+      this.$store.commit('clearMsg')
+      this.activeClass = index
+      const localMsg = this.getRecord(uinfo.friend_id)
+      this.$store.commit('pushMsg', localMsg)
+      this.$store.commit('setCurSelectUser', {
         uid: uinfo.friend_id,
         nickname: uinfo.nickname,
         avatar: uinfo.avatar
-      });
+      })
     },
     getRecord(toUid) {
-      let msgkey = "msg_" + userInfo.uid + "_" + toUid;
-      let msg = storage.get(msgkey);
-      return JSON.parse(msg);
+      const msgkey = 'msg_' + userInfo.uid + '_' + toUid
+      const msg = storage.get(msgkey)
+      return JSON.parse(msg)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

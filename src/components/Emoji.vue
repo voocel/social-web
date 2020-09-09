@@ -1,6 +1,6 @@
 <template>
   <div class="emoji">
-    <el-tabs type="border-card" tab-position="bottom" v-model="activeName">
+    <el-tabs v-model="activeName" type="border-card" tab-position="bottom">
       <el-tab-pane name="default">
         <span slot="label" class="emoji-tap" :lazy="true">{{
           emojiJson[0]
@@ -19,9 +19,9 @@
         <span slot="label" class="emoji-tap" :lazy="true">
           <!-- <img :src="IMG_URL + v.list[0]" alt="" class="emoji-tap-img" /> -->
         </span>
-        <ul class="emoji-ul" v-if="activeName === v.code + ''">
+        <ul v-if="activeName === v.code + ''" class="emoji-ul">
           <li v-for="(m, n) in v.list" :key="n" @click.stop="chooseEmoji(m)">
-            <img v-lazy="IMG_URL + m" />
+            <img v-lazy="IMG_URL + m">
           </li>
         </ul>
       </el-tab-pane>
@@ -30,7 +30,7 @@
           <!-- <icon name="jia2" color="rgba(50, 50, 50, 0.64)"></icon> -->
           {{ emojiJson[2] }}
         </span>
-        <div class="emoji-shop" v-if="activeName === 'shop'">
+        <div v-if="activeName === 'shop'" class="emoji-shop">
           <h3>表情库</h3>
           <ul class="emoji-shop-ul">
             <li
@@ -39,7 +39,7 @@
               @click.stop="emojiDetail(m)"
             >
               <a>
-                <img v-lazy="IMG_URL + m.list[0]" alt />
+                <img v-lazy="IMG_URL + m.list[0]" alt>
               </a>
               <p class="line1">{{ m.name }}</p>
             </li>
@@ -48,24 +48,24 @@
             <h3>{{ currEmojiDetail.name }}</h3>
             <icon
               class="el-icon-circle-close-outline deClose"
-              @clickIcon="currEmojiDetail = {}"
               color="#323232"
               :size="24"
               cursor="pointer"
-            ></icon>
+              @clickIcon="currEmojiDetail = {}"
+            />
             <ul class="emoji-detail">
               <li v-for="(m, n) in currEmojiDetail.list" :key="n">
-                <img v-lazy="IMG_URL + m" alt />
+                <img v-lazy="IMG_URL + m" alt>
               </li>
             </ul>
             <p
-              class="vchat-button addEmoji"
               v-if="user.emoji.indexOf(currEmojiDetail.code) === -1"
+              class="vchat-button addEmoji"
               @click.stop="addEmoji(currEmojiDetail.code)"
             >
               添加
             </p>
-            <p class="vchat-button info addEmoji" v-else>已添加</p>
+            <p v-else class="vchat-button info addEmoji">已添加</p>
           </div>
         </div>
       </el-tab-pane>
@@ -74,94 +74,94 @@
 </template>
 
 <script>
-import emojiJson from "@/assets/emoji/emoji";
-import Icon from "@/components/Icon";
-import { mapState } from "vuex";
-import storage from "@/common/storage";
-var userInfo = JSON.parse(storage.get(storage.USER_INFO));
+import emojiJson from '@/assets/emoji/emoji'
+import Icon from '@/components/Icon'
+import { mapState } from 'vuex'
+import storage from '@/common/storage'
+var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
-  name: "emoji",
-  data() {
-    return {
-      IMG_URL: "http://127.0.0.1:8001",
-      expressionList: [], // 表情商城
-      myEmojiList: [], // 我的表情包
-      currEmojiDetail: {}, // 表情包详情页
-      emojiJson: emojiJson.data.split(","),
-      activeName: "default" // 当前选项
-    };
-  },
+  name: 'Emoji',
   components: {
     Icon
   },
+  data() {
+    return {
+      IMG_URL: 'http://127.0.0.1:8001',
+      expressionList: [], // 表情商城
+      myEmojiList: [], // 我的表情包
+      currEmojiDetail: {}, // 表情包详情页
+      emojiJson: emojiJson.data.split(','),
+      activeName: 'default' // 当前选项
+    }
+  },
   computed: {
-    ...mapState(["user"])
+    ...mapState(['user'])
   },
   watch: {
-    "user.emoji"() {
-      this.myEmojiList = [];
+    'user.emoji'() {
+      this.myEmojiList = []
       this.expressionList.forEach(v => {
         this.user.emoji.forEach(m => {
           if (v.code === m) {
-            this.myEmojiList.push(v);
+            this.myEmojiList.push(v)
           }
-        });
-      });
+        })
+      })
     }
+  },
+  mounted() {
+    // if (this.user.emoji) {
+    this.getExpression()
+    // }
   },
   methods: {
     getExpression() {
       this.$api.user.getEmoji({ uid: userInfo.uid }).then(r => {
         if (r.code === 0) {
-          this.myEmojiList = [];
-          this.expressionList = r.data;
+          this.myEmojiList = []
+          this.expressionList = r.data
           r.data.forEach(v => {
             this.user.emoji.forEach(m => {
               if (v.code === m) {
-                this.myEmojiList.push(v);
+                this.myEmojiList.push(v)
               }
-            });
-          });
+            })
+          })
         }
-      });
+      })
     },
     chooseEmoji(url) {
-      this.$emit("chooseEmoji", url);
+      this.$emit('chooseEmoji', url)
     },
     emojiDetail(val) {
-      this.currEmojiDetail = val;
+      this.currEmojiDetail = val
     },
     chooseEmojiDefault(em) {
-      this.$emit("chooseEmojiDefault", em);
+      this.$emit('chooseEmojiDefault', em)
     },
     addEmoji(code) {
       // 添加表情包
-      this.user.emoji.push(code);
-      let params = {
+      this.user.emoji.push(code)
+      const params = {
         emoji: this.user.emoji
-      };
+      }
       this.$api.user.addEmoji({ uid: userInfo.uid, params }).then(r => {
         if (r.code === 0) {
           this.$message({
-            message: "添加成功",
-            type: "success"
-          });
+            message: '添加成功',
+            type: 'success'
+          })
         } else {
           this.$message({
-            message: "添加失败",
-            type: "warning"
-          });
+            message: '添加失败',
+            type: 'warning'
+          })
         }
-      });
+      })
     }
-  },
-  mounted() {
-    // if (this.user.emoji) {
-    this.getExpression();
-    // }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

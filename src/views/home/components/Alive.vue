@@ -4,10 +4,10 @@
       <ul>
         <router-link to="/chat">
           <li
-            class="alive-item"
-            :class="{ active: activeClass == index }"
             v-for="(item, index) in aliveData"
             :key="index"
+            class="alive-item"
+            :class="{ active: activeClass == index }"
             @click="selectUser(index, item)"
           >
             <el-row>
@@ -18,7 +18,7 @@
                     :size="36"
                     :lighten="60"
                     :username="item.nickname"
-                  ></avatar>
+                  />
                 </div>
               </el-col>
               <el-col :span="20">
@@ -40,7 +40,7 @@
                         :value="item.unread"
                         :max="99"
                         class="unread"
-                      ></el-badge>
+                      />
                     </el-col>
                   </el-row>
                 </div>
@@ -54,57 +54,57 @@
 </template>
 
 <script>
-import storage from "@/common/storage";
-var userInfo = JSON.parse(storage.get(storage.USER_INFO));
+import storage from '@/common/storage'
+var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
-  name: "Alive",
+  name: 'Alive',
   data() {
     return {
       activeClass: -1
-    };
-  },
-  created() {
-    if (this.$store.state.curSelected && this.$store.state.curSelected.index) {
-      this.activeClass = this.$store.state.curSelected.index;
-    } else {
-      if (this.$router.currentRoute.path !== "/") this.$router.push("/");
     }
   },
   computed: {
     aliveData() {
-      return this.$store.state.aliveList;
+      return this.$store.state.aliveList
       // return this.$store.getters.getAliveList
+    }
+  },
+  created() {
+    if (this.$store.state.curSelected && this.$store.state.curSelected.index) {
+      this.activeClass = this.$store.state.curSelected.index
+    } else {
+      if (this.$router.currentRoute.path !== '/') this.$router.push('/')
     }
   },
   methods: {
     selectUser(index, uinfo) {
-      this.$store.commit("clearMsg");
-      this.activeClass = index;
-      let localMsg = this.getRecord(uinfo.to_id);
-      this.$store.commit("pushMsg", localMsg);
-      this.$store.commit("setCurSelectUser", {
+      this.$store.commit('clearMsg')
+      this.activeClass = index
+      const localMsg = this.getRecord(uinfo.to_id)
+      this.$store.commit('pushMsg', localMsg)
+      this.$store.commit('setCurSelectUser', {
         index: index,
         uid: uinfo.to_id,
         nickname: uinfo.nickname,
         avatar: uinfo.avatar
-      });
-      this.clearUnread(uinfo.to_id);
+      })
+      this.clearUnread(uinfo.to_id)
     },
     // 拉取本地聊天记录
     getRecord(toUid) {
-      let msgkey = "msg_" + userInfo.uid + "_" + toUid;
-      let msg = storage.get(msgkey);
-      return JSON.parse(msg);
+      const msgkey = 'msg_' + userInfo.uid + '_' + toUid
+      const msg = storage.get(msgkey)
+      return JSON.parse(msg)
     },
     // 清空未读消息数
     clearUnread(toUid) {
-      let aliveList = this.$store.state.aliveList;
-      aliveList[toUid].unread = "";
-      this.$store.commit("setAliveList", aliveList);
+      const aliveList = this.$store.state.aliveList
+      aliveList[toUid].unread = ''
+      this.$store.commit('setAliveList', aliveList)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -2,25 +2,25 @@
   <div>
     <div class="head-search">
       <el-input
+        v-model="searchText"
         class="search-item"
         placeholder="搜索用户或群组"
         prefix-icon="el-icon-search"
-        v-model="searchText"
         clearable
-      ></el-input>
+      />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Search",
+  name: 'Search',
   data() {
     return {
-      searchText: ""
-    };
+      searchText: ''
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

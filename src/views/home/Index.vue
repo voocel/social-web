@@ -1,14 +1,14 @@
 <template>
   <el-container class="main" :style="{ height: fullHeight + 'px' }">
     <el-header>
-      <headers></headers>
+      <headers />
     </el-header>
     <el-container>
       <el-aside class="menu" width="65px">
-        <menus></menus>
+        <menus />
       </el-aside>
       <el-aside class="dialog" width="360px">
-        <left-nav></left-nav>
+        <left-nav />
       </el-aside>
       <el-main>
         <el-dialog
@@ -19,26 +19,26 @@
           width="30%"
           height="40%"
         >
-          <span>正在尝试重新连接服务器({{ this.maxReconnect }})...</span>
+          <span>正在尝试重新连接服务器({{ maxReconnect }})...</span>
         </el-dialog>
-        <router-view @childSend="childSend"></router-view>
+        <router-view @childSend="childSend" />
       </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-import appConfig from "@/config/app";
-import Menus from "./components/Menus";
-import Headers from "../header/Header";
-import LeftNav from "./components/LeftNav";
-import tips from "@/utils/tips";
-import storage from "@/common/storage";
+import appConfig from '@/config/app'
+import Menus from './components/Menus'
+import Headers from '../header/Header'
+import LeftNav from './components/LeftNav'
+import tips from '@/utils/tips'
+import storage from '@/common/storage'
 
-var userInfo = JSON.parse(storage.get(storage.USER_INFO));
+var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
-  name: "Index",
+  name: 'Index',
   components: {
     Menus,
     Headers,
@@ -51,171 +51,171 @@ export default {
       fullHeight: document.documentElement.clientHeight,
       websocket: null,
       reconnectData: null,
-      lockReconnect: false, //避免重复连接，因为onerror之后会立即触发 onclose
-      timeout: 20000, //10s一次心跳检测
+      lockReconnect: false, // 避免重复连接，因为onerror之后会立即触发 onclose
+      timeout: 20000, // 10s一次心跳检测
       timeoutObj: null,
       serverTimeoutObj: null,
       socketStatus: false
-    };
+    }
   },
   mounted() {},
   created() {
-    window.addEventListener("resize", this.handleResize);
-    this.initWebSocket();
+    window.addEventListener('resize', this.handleResize)
+    this.initWebSocket()
   },
   destroyed() {
-    this.lockReconnect = true;
-    this.websocket.close();
-    clearTimeout(this.reconnectData);
-    clearTimeout(this.timeoutObj);
-    clearTimeout(this.serverTimeoutObj);
+    this.lockReconnect = true
+    this.websocket.close()
+    clearTimeout(this.reconnectData)
+    clearTimeout(this.timeoutObj)
+    clearTimeout(this.serverTimeoutObj)
   },
   methods: {
     initWebSocket() {
       const wsurl =
-        "ws://" + appConfig.socket_url + ":" + appConfig.socket_port;
-      this.websocket = new WebSocket(wsurl);
-      this.websocket.onmessage = this.onMessage;
-      this.websocket.onopen = this.onOpen;
-      this.websocket.onerror = this.onError;
-      this.websocket.onclose = this.onClose;
+        'ws://' + appConfig.socket_url + ':' + appConfig.socket_port
+      this.websocket = new WebSocket(wsurl)
+      this.websocket.onmessage = this.onMessage
+      this.websocket.onopen = this.onOpen
+      this.websocket.onerror = this.onError
+      this.websocket.onclose = this.onClose
     },
     onOpen() {
-      let actions = {
-        cmd: "connect",
+      const actions = {
+        cmd: 'connect',
         param: {
           uid: parseInt(userInfo.uid),
           appId: 1,
           token: storage.get(storage.USER_TOKEN)
         }
-      };
-      this.wsSend(JSON.stringify(actions));
-      this.heatBeat();
-      this.socketStatus = true;
-      this.dialogVisible = false;
+      }
+      this.wsSend(JSON.stringify(actions))
+      this.heatBeat()
+      this.socketStatus = true
+      this.dialogVisible = false
     },
     onClose(e) {
-      console.log("断开连接", e);
-      if (this.websocket.readyState != 1) {
-        this.socketStatus = false;
-        this.reconnect();
+      console.log('断开连接', e)
+      if (this.websocket.readyState !== 1) {
+        this.socketStatus = false
+        this.reconnect()
       }
     },
     onError(e) {
-      console.log("连接错误..", e);
-      this.dialogVisible = true;
+      console.log('连接错误..', e)
+      this.dialogVisible = true
     },
     reconnect() {
       if (this.lockReconnect || this.maxReconnect >= 10) {
-        return;
+        return
       }
-      this.lockReconnect = true;
-      this.reconnectData && clearTimeout(this.reconnectData);
+      this.lockReconnect = true
+      this.reconnectData && clearTimeout(this.reconnectData)
       this.reconnectData = setTimeout(() => {
-        this.initWebSocket();
-        this.lockReconnect = false;
-        this.maxReconnect++;
-      }, 5000);
+        this.initWebSocket()
+        this.lockReconnect = false
+        this.maxReconnect++
+      }, 5000)
     },
     heatBeat() {
-      this.timeoutObj && clearTimeout(this.timeoutObj);
-      this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj);
+      this.timeoutObj && clearTimeout(this.timeoutObj)
+      this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj)
       this.timeoutObj = setTimeout(() => {
-        if (this.websocket.readyState == 1) {
-          this.websocket.send('{"cmd":"ping"}');
+        if (this.websocket.readyState === 1) {
+          this.websocket.send('{"cmd":"ping"}')
         } else {
-          this.reconnect();
+          this.reconnect()
         }
         this.serverTimeoutObj = setTimeout(() => {
           // this.websocket.close();
-        }, this.timeout);
-      }, this.timeout);
+        }, this.timeout)
+      }, this.timeout)
     },
     onMessage(e) {
-      this.heatBeat();
-      let json = JSON.parse(e.data);
-      if (json.result !== "pong") console.log(json);
+      this.heatBeat()
+      const json = JSON.parse(e.data)
+      if (json.result !== 'pong') console.log(json)
       if (json.code === 200) {
         switch (json.result.type) {
-          case "connect":
-            console.log("连接服务器成功!");
+          case 'connect':
+            console.log('连接服务器成功!')
             this.$message({
               showClose: true,
               message: json.result.data,
               duration: 3000,
-              type: "success"
-            });
-            break;
-          case "msg":
-            this.sysmsg = json.result.data;
+              type: 'success'
+            })
+            break
+          case 'msg':
+            this.sysmsg = json.result.data
             this.$message({
               showClose: true,
               message: json.result.data,
               duration: 3000,
-              type: "success"
-            });
-            break;
-          case "chat":
-            console.log(json.result.data);
-            this.chat(json.result.data);
-            break;
+              type: 'success'
+            })
+            break
+          case 'chat':
+            console.log(json.result.data)
+            this.chat(json.result.data)
+            break
 
           default:
         }
       } else {
-        if (json.type === "online") {
-          this.onlineNum = json.data;
+        if (json.type === 'online') {
+          this.onlineNum = json.data
         }
         if (json.code !== undefined) {
-          if (json.code == 401) {
-            tips.reLoginTip();
+          if (json.code === 401) {
+            tips.reLoginTip()
           } else {
             this.$message({
               showClose: true,
               message: json.message,
               duration: 3000,
-              type: "error"
-            });
+              type: 'error'
+            })
           }
         }
       }
     },
     wsSend(msg) {
-      this.websocket.send(msg);
+      this.websocket.send(msg)
     },
     childSend(res) {
-      console.log("发送数据");
-      this.wsSend(res);
+      console.log('发送数据')
+      this.wsSend(res)
     },
     handleResize() {
-      this.fullHeight = document.documentElement.clientHeight;
+      this.fullHeight = document.documentElement.clientHeight
     },
     chat(msg) {
       if (this.$store.state.curSelected.uid === msg.from_uid) {
-        let pushData = {
+        const pushData = {
           nickname: msg.from_nickname,
           uid: msg.from_uid,
           avatar: msg.from_avatar,
           content: msg.content,
           self: false,
           timeline: msg.time
-        };
-        this.$store.commit("pushMsg", pushData);
+        }
+        this.$store.commit('pushMsg', pushData)
       }
 
-      this.recordAlive(msg);
-      this.recordMsg(msg);
+      this.recordAlive(msg)
+      this.recordMsg(msg)
 
-      let aliveList = this.$store.state.aliveList;
-      let unread;
+      const aliveList = this.$store.state.aliveList
+      let unread
       if (
         // JSON.stringify(aliveList) == "{}" ||
         !aliveList[msg.from_uid] ||
         isNaN(parseInt(aliveList[msg.from_uid].unread))
       ) {
-        unread = 1;
+        unread = 1
       } else {
-        unread = parseInt(aliveList[msg.from_uid].unread) + 1;
+        unread = parseInt(aliveList[msg.from_uid].unread) + 1
       }
       aliveList[msg.from_uid] = {
         to_id: msg.from_uid,
@@ -224,15 +224,15 @@ export default {
         last_msg: msg.content,
         last_time: this.common.getCurTime(1),
         unread: unread
-      };
-      this.$store.commit("setAliveList", aliveList);
+      }
+      this.$store.commit('setAliveList', aliveList)
     },
     recordAlive(msg) {
-      let aliveList = storage.get("aliveList");
+      let aliveList = storage.get('aliveList')
       if (!aliveList) {
-        aliveList = {};
+        aliveList = {}
       } else {
-        aliveList = JSON.parse(aliveList);
+        aliveList = JSON.parse(aliveList)
       }
       aliveList[msg.from_uid] = {
         to_id: msg.from_uid,
@@ -241,15 +241,15 @@ export default {
         last_msg: msg.content,
         last_time: this.common.getCurTime(1),
         unread: 20
-      };
+      }
     },
     recordMsg(msg) {
-      let msgkey = "msg_" + userInfo.uid + "_" + msg.from_uid;
-      let data = storage.get(msgkey);
+      const msgkey = 'msg_' + userInfo.uid + '_' + msg.from_uid
+      let data = storage.get(msgkey)
       if (!data) {
-        data = [];
+        data = []
       } else {
-        data = JSON.parse(data);
+        data = JSON.parse(data)
       }
       data.push({
         uid: msg.from_uid,
@@ -258,11 +258,11 @@ export default {
         content: msg.content,
         self: false,
         timeline: this.common.getCurTime()
-      });
-      storage.set(msgkey, JSON.stringify(data));
+      })
+      storage.set(msgkey, JSON.stringify(data))
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

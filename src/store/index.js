@@ -1,17 +1,17 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import persisted from "./persistedState.js";
+import Vue from 'vue'
+import Vuex from 'vuex'
+import persisted from './persistedState.js'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 const state = {
-  token: "",
+  token: '',
   user: {}, // ICON组件中用到
   curSelected: null,
   network: true,
   msgData: [],
   aliveList: {}
-};
+}
 
 // const getters = {
 //   getAliveList(state){
@@ -26,31 +26,31 @@ const mutations = {
   pushMsg(state, data) {
     if (data) {
       if (data.constructor === Array) {
-        state.msgData.push(...data);
+        state.msgData.push(...data)
       } else {
-        state.msgData.push(data);
+        state.msgData.push(data)
       }
     }
   },
   clearMsg(state) {
-    state.msgData = [];
+    state.msgData = []
   },
   setCurSelectUser(state, uid) {
-    state.curSelected = uid;
+    state.curSelected = uid
   },
   changeNetwork(state, status) {
-    state.network = status;
+    state.network = status
   },
   loginSuccess(state, token) {
-    state.token = token;
+    state.token = token
   },
   setAliveList(state) {
-    state.aliveList = Object.assign({}, state.aliveList);
+    state.aliveList = Object.assign({}, state.aliveList)
   }
-};
+}
 
 export default new Vuex.Store({
   state,
   mutations,
   plugins: [persisted()]
-});
+})

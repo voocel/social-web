@@ -12,23 +12,23 @@
             </li>
           </ul>
         </div>
-        <el-button class="add-btn" slot="reference">
+        <el-button slot="reference" class="add-btn">
           <span>
-            <i class="el-icon-plus"></i>
+            <i class="el-icon-plus" />
           </span>
         </el-button>
       </el-popover>
       <el-dialog title="添加" :visible.sync="friendVisible" width="24%" center>
         <div>
-          <el-input placeholder="请输入用户ID" v-model="friendId" clearable>
+          <el-input v-model="friendId" placeholder="请输入用户ID" clearable>
             <template slot="prepend">用户ID</template>
           </el-input>
           <el-input
+            v-model="applyInfo"
             type="textarea"
             :rows="3"
             placeholder="请求添加你为好友"
-            v-model="applyInfo"
-          ></el-input>
+          />
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="friendVisible = false">取 消</el-button>
@@ -37,12 +37,12 @@
       </el-dialog>
       <el-dialog title="创建" :visible.sync="groupVisible" width="24%" center>
         <div>
-          <el-input placeholder="请输入群组名称" v-model="groupName" clearable>
+          <el-input v-model="groupName" placeholder="请输入群组名称" clearable>
             <template slot="prepend">群组名称</template>
           </el-input>
           <el-input
-            placeholder="请输入群组描述"
             v-model="groupNotice"
+            placeholder="请输入群组描述"
             clearable
           >
             <template slot="prepend">群组描述</template>
@@ -58,20 +58,20 @@
 </template>
 
 <script>
-import storage from "@/common/storage";
-var userInfo = JSON.parse(storage.get(storage.USER_INFO));
+import storage from '@/common/storage'
+var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
-  name: "Add",
+  name: 'Add',
   data() {
     return {
       friendVisible: false,
       groupVisible: false,
-      groupName: "",
-      friendId: "",
-      applyInfo: "",
-      groupNotice: ""
-    };
+      groupName: '',
+      friendId: '',
+      applyInfo: '',
+      groupNotice: ''
+    }
   },
   methods: {
     addFriend() {
@@ -83,18 +83,18 @@ export default {
         })
         .then(res => {
           if (res.data.code === 200) {
-            this.friendVisible = false;
+            this.friendVisible = false
             this.$message({
-              message: "发送申请成功,等待对方同意",
-              type: "success"
-            });
+              message: '发送申请成功,等待对方同意',
+              type: 'success'
+            })
           } else {
             this.$message({
               message: res.data.msg,
-              type: "error"
-            });
+              type: 'error'
+            })
           }
-        });
+        })
     },
     createGroup() {
       this.$api.group
@@ -104,21 +104,21 @@ export default {
         })
         .then(res => {
           if (res.data.code === 200) {
-            this.groupVisible = false;
+            this.groupVisible = false
             this.$message({
-              message: "创建成功",
-              type: "success"
-            });
+              message: '创建成功',
+              type: 'success'
+            })
           } else {
             this.$message({
               message: res.data.msg,
-              type: "error"
-            });
+              type: 'error'
+            })
           }
-        });
+        })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

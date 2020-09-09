@@ -2,16 +2,16 @@
   <div class="groups">
     <ul>
       <li
-        class="groups-item"
-        :class="{ active: activeClass == index }"
         v-for="(item, index) in groupsData"
         :key="index"
+        class="groups-item"
+        :class="{ active: activeClass == index }"
         @click="selectGroup(index, item)"
       >
         <el-row>
           <el-col :span="4">
             <div class="avatar">
-              <img :src="item.avatar" alt />
+              <img :src="item.avatar" alt>
             </div>
           </el-col>
           <el-col :span="20">
@@ -25,26 +25,29 @@
 
 <script>
 export default {
-  name: "Group",
+  name: 'Group',
   props: {
-    groupsData: Array
+    groupsData: {
+      type: Array,
+      default: () => {}
+    }
   },
   data() {
     return {
       activeClass: -1
-    };
+    }
   },
   methods: {
     selectGroup(index, uinfo) {
-      this.activeClass = index;
-      this.$store.commit("setCurSelectUser", {
+      this.activeClass = index
+      this.$store.commit('setCurSelectUser', {
         uid: uinfo.friend_id,
         nickname: uinfo.nickname,
         avatar: uinfo.avatar
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -2,26 +2,24 @@
   <div>
     <div class="head-newfriend" @click="dialogTableVisible = true">
       <i style="font-size:20px;" class="iconfont">&#xeb92;</i>
-      <div class="newfriend-dot"></div>
+      <div class="newfriend-dot" />
     </div>
     <el-dialog width="40%" title="好友申请" :visible.sync="dialogTableVisible">
       <el-table :data="applyData" :show-header="false">
-        <el-table-column property="nickname" width="110"></el-table-column>
-        <el-table-column property="apply_info"></el-table-column>
+        <el-table-column property="nickname" width="110" />
+        <el-table-column property="apply_info" />
         <el-table-column width="180">
           <template slot-scope="scope">
             <div v-if="scope.row.status == 0">
               <el-button
                 size="mini"
                 @click="handleRefuse(scope.$index, scope.row)"
-                >拒绝</el-button
-              >
+              >拒绝</el-button>
               <el-button
                 size="mini"
                 type="success"
                 @click="handleAgree(scope.$index, scope.row)"
-                >同意</el-button
-              >
+              >同意</el-button>
             </div>
             <div v-else-if="scope.row.status == 1">
               <span style="color:silver;">已同意</span>
@@ -38,71 +36,71 @@
 
 <script>
 export default {
-  name: "FriendApply",
+  name: 'FriendApply',
   data() {
     return {
       dialogTableVisible: false,
       applyData: []
-    };
+    }
   },
   watch: {
     dialogTableVisible(v) {
       if (v === true) {
-        this.handleGetFriendApply();
+        this.handleGetFriendApply()
       }
     }
   },
   methods: {
     handleAgree(index, row) {
-      console.log(index, row);
+      console.log(index, row)
       this.$api.friend
         .agreeFriendApply({
           apply_id: row.apply_id
         })
         .then(res => {
           if (res.data.code === 200) {
-            this.handleGetFriendApply();
-            console.log(res);
+            this.handleGetFriendApply()
+            console.log(res)
           } else {
             this.$message({
               message: res.data.msg,
-              type: "error"
-            });
+              type: 'error'
+            })
           }
-        });
+        })
     },
     handleRefuse(index, row) {
-      console.log(index, row);
+      console.log(index, row)
       this.$api.friend
         .refuseFriendApply({
           apply_id: row.apply_id
         })
         .then(res => {
           if (res.data.code === 200) {
-            this.handleGetFriendApply();
-            console.log(res);
+            this.handleGetFriendApply()
+            console.log(res)
           } else {
             this.$message({
               message: res.data.msg,
-              type: "error"
-            });
+              type: 'error'
+            })
           }
-        });
+        })
     },
     handleGetFriendApply() {
       this.$api.friend.getFriendApply().then(res => {
         if (res.data.code === 200) {
-          this.applyData = res.data.result;
+          this.applyData = res.data.result
         } else {
           this.$message({
             message: res.data.msg,
-            type: "error"
-          });
+            type: 'error'
+          })
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
