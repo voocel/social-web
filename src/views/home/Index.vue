@@ -191,7 +191,7 @@ export default {
       this.fullHeight = document.documentElement.clientHeight
     },
     chat(msg) {
-      if (this.$store.state.curSelected.uid === msg.from_uid) {
+      if (this.$store.state.curSelected && this.$store.state.curSelected.uid === msg.from_uid) {
         const pushData = {
           nickname: msg.from_nickname,
           uid: msg.from_uid,
@@ -202,7 +202,6 @@ export default {
         }
         this.$store.commit('pushMsg', pushData)
       }
-
       this.recordAlive(msg)
       this.recordMsg(msg)
 
@@ -228,12 +227,7 @@ export default {
       this.$store.commit('setAliveList', aliveList)
     },
     recordAlive(msg) {
-      let aliveList = storage.get('aliveList')
-      if (!aliveList) {
-        aliveList = {}
-      } else {
-        aliveList = JSON.parse(aliveList)
-      }
+      const aliveList = storage.get('aliveList') ? JSON.parse(storage.get('aliveList')) : {}
       aliveList[msg.from_uid] = {
         to_id: msg.from_uid,
         nickname: msg.from_nickname,
@@ -245,12 +239,7 @@ export default {
     },
     recordMsg(msg) {
       const msgkey = 'msg_' + userInfo.uid + '_' + msg.from_uid
-      let data = storage.get(msgkey)
-      if (!data) {
-        data = []
-      } else {
-        data = JSON.parse(data)
-      }
+      const data = storage.get(msgkey) ? JSON.parse(storage.get(msgkey)) : []
       data.push({
         uid: msg.from_uid,
         nickname: msg.from_nickname,
