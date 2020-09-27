@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import appConfig from '@/config/app'
 import Menus from './components/Menus'
 import Headers from '../header/Header'
 import LeftNav from './components/LeftNav'
@@ -72,8 +71,7 @@ export default {
   },
   methods: {
     initWebSocket() {
-      const wsurl =
-        'ws://' + appConfig.socket_url + ':' + appConfig.socket_port
+      const wsurl = 'ws://' + process.env.VUE_APP_SOCKET_URL + ':' + process.env.VUE_APP_SOCKET_PORT
       this.websocket = new WebSocket(wsurl)
       this.websocket.onmessage = this.onMessage
       this.websocket.onopen = this.onOpen

@@ -87,7 +87,7 @@ export default {
   },
   data() {
     return {
-      IMG_URL: 'http://127.0.0.1:8001',
+      IMG_URL: 'http://127.0.0.1:8100',
       expressionList: [], // 表情商城
       myEmojiList: [], // 我的表情包
       currEmojiDetail: {}, // 表情包详情页
