@@ -1,5 +1,6 @@
 <template>
   <el-container class="main" :style="{ height: fullHeight + 'px' }">
+    <div class="head">chat</div>
     <el-header>
       <headers :is-online="socketStatus" />
     </el-header>
@@ -292,5 +293,14 @@ body > .el-container {
 }
 .el-container:nth-child(7) .el-aside {
   line-height: 320px;
+}
+.head {
+  height: 45px;
+  line-height: 45px;
+  // background: #5ca6ef;
+  // background-image: linear-gradient(to left, #a1c4fd , #c2e9fb);
+  background-image: linear-gradient(to top, #dfe9f3 0%, white 100%);
+  text-align: center;
+  color: rgb(39, 6, 70);
 }
 </style>

@@ -82,7 +82,7 @@ export default {
 }
 .el-menu {
   height: calc(100vh - 60px);
-  background-color: rgb(50, 55, 60);
+  background-color: rgb(238, 238, 238);
   // background: #f3f3f3;
 }
 // .menu {

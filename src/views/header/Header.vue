@@ -142,7 +142,8 @@ export default {
     width: 63px;
     margin-left: 0px;
     padding-left: 8px;
-    background: rgb(62, 69, 77);
+    // background: rgb(62, 69, 77);
+    background: rgba(201, 191, 164, 0.61);
     .el-dropdown-link {
       cursor: pointer;
       color: #409eff;

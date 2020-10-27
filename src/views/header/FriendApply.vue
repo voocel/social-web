@@ -4,7 +4,7 @@
       <i style="font-size:20px;" class="iconfont">&#xeb92;</i>
       <div class="newfriend-dot" />
     </div>
-    <el-dialog width="40%" title="好友申请" :visible.sync="dialogTableVisible">
+    <el-dialog width="40%" title="好友申请" :visible.sync="dialogTableVisible" :close-on-click-modal="false">
       <el-table :data="applyData" :show-header="false">
         <el-table-column property="nickname" width="110" />
         <el-table-column property="apply_info" />
