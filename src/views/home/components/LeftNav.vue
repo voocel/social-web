@@ -63,11 +63,11 @@ export default {
           uid: userInfo.uid
         })
         .then(res => {
-          if (res.data.code === 200) {
-            this.friendsData = res.data.result
+          if (res.data.code === 0) {
+            this.friendsData = res.data.data
           } else {
             this.$message({
-              message: res.data.msg,
+              message: res.data.message,
               type: 'error'
             })
           }
@@ -79,11 +79,11 @@ export default {
           uid: userInfo.uid
         })
         .then(res => {
-          if (res.data.code === 200) {
-            this.groupsData = res.data.result
+          if (res.data.code === 0) {
+            this.groupsData = res.data.data
           } else {
             this.$message({
-              message: res.data.msg,
+              message: res.data.message,
               type: 'error'
             })
           }

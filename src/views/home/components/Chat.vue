@@ -119,10 +119,10 @@ export default {
       const sendData = {
         cmd: 'chat',
         seq: 'xyz',
-        param: {
-          type: 'msg',
-          uid: parseInt(userInfo.uid),
-          touid: toUinfo.uid,
+        params: {
+          kind: 'msg',
+          sender: parseInt(userInfo.uid),
+          receiver: toUinfo.uid,
           content: this.inputData
         }
       }

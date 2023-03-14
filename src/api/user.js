@@ -7,7 +7,7 @@ import qs from 'qs' // 根据需求是否导入qs模块
 const user = {
   // 登录
   login(params) {
-    return http.post('/user/login', qs.stringify(params))
+    return http.post('/user/login', params)
   },
   // 注册
   register(params) {

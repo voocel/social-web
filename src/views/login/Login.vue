@@ -52,19 +52,20 @@ export default {
           })
           .then(res => {
             if (res) {
-              if (res.data.code === 200) {
+              var result = res.data
+              if (res.data.code === 0) {
                 const data = {
-                  uid: res.data.result.id,
-                  username: res.data.result.username,
-                  nickname: res.data.result.nickname,
-                  avatar: res.data.result.avatar
+                  uid: result.data.id,
+                  username: result.data.username,
+                  nickname: result.data.nickname,
+                  avatar: result.data.avatar
                 }
                 storage.set(storage.USER_INFO, JSON.stringify(data))
-                storage.set(storage.USER_TOKEN, res.data.result.access_token)
+                storage.set(storage.USER_TOKEN, result.data.access_token)
                 this.$router.push('/')
               } else {
                 this.$message({
-                  message: res.data.msg,
+                  message: result.msg,
                   type: 'error'
                 })
               }

@@ -72,12 +72,14 @@ export default {
   },
   methods: {
     initWebSocket() {
-      const wsurl = 'ws://' + process.env.VUE_APP_SOCKET_URL + ':' + process.env.VUE_APP_SOCKET_PORT
+      var wsurl = 'ws://' + process.env.VUE_APP_SOCKET_URL + ':' + process.env.VUE_APP_SOCKET_PORT + '/ws'
+      wsurl = wsurl + '?token=666'
       this.websocket = new WebSocket(wsurl)
       this.websocket.onmessage = this.onMessage
       this.websocket.onopen = this.onOpen
       this.websocket.onerror = this.onError
       this.websocket.onclose = this.onClose
+      this.websocket.binaryType = 'arraybuffer'
     },
     onOpen() {
       const actions = {
@@ -121,7 +123,7 @@ export default {
       this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj)
       this.timeoutObj = setTimeout(() => {
         if (this.websocket.readyState === 1) {
-          this.websocket.send('{"cmd":"ping"}')
+          this.wsSend('{"cmd":"ping"}')
         } else {
           this.reconnect()
         }
@@ -131,32 +133,34 @@ export default {
       }, this.timeout)
     },
     onMessage(e) {
-      this.heatBeat()
+      // this.heatBeat()
+      console.log(e.data)
       const json = JSON.parse(e.data)
-      if (json.result !== 'pong') console.log(json)
-      if (json.code === 200) {
-        switch (json.result.type) {
+      console.log(json)
+      if (json.data.cmd !== 'pong') console.log(json)
+      if (json.code === 0) {
+        switch (json.data.cmd) {
           case 'connect':
             console.log('连接服务器成功!')
             this.$message({
               showClose: true,
-              message: json.result.data,
+              message: json.data.message,
               duration: 3000,
               type: 'success'
             })
             break
           case 'msg':
-            this.sysmsg = json.result.data
+            this.sysmsg = json.data.content
             this.$message({
               showClose: true,
-              message: json.result.data,
+              message: json.data.message,
               duration: 3000,
               type: 'success'
             })
             break
           case 'chat':
-            console.log(json.result.data)
-            this.chat(json.result.data)
+            console.log(json.data)
+            this.chat(json.data.content)
             break
 
           default:
@@ -179,12 +183,33 @@ export default {
         }
       }
     },
+    packMsg(str) {
+      var buf = new ArrayBuffer(str.length + 4)
+      var bufView = new Uint8Array(buf)
+      bufView[0] = 3
+      for (var i = 0, strLen = str.length; i < strLen + 4; i++) {
+        bufView[i + 4] = str.charCodeAt(i)
+      }
+      return buf
+    },
     wsSend(msg) {
+      msg = this.str2ab(msg)
       this.websocket.send(msg)
     },
     childSend(res) {
       console.log('发送数据')
       this.wsSend(res)
+    },
+    // message = route(4byte)+data
+    str2ab(str) {
+      var buf = new ArrayBuffer(str.length + 4) // 每个字符占用1个字节
+      var bufView = new Uint8Array(buf)
+      var route = 4
+      bufView[0] = route
+      for (var i = 0, strLen = str.length; i < strLen + 4; i++) {
+        bufView[i + 4] = str.charCodeAt(i)
+      }
+      return buf
     },
     handleResize() {
       this.fullHeight = document.documentElement.clientHeight
