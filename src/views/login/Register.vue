@@ -24,7 +24,7 @@
             @click="register"
           >
           <router-link to="/login">
-            <el-button size="mini" type="text">点击登陆</el-button>
+            <el-button size="mini" type="text">点击登录</el-button>
           </router-link>
         </form>
       </div>
