@@ -58,7 +58,6 @@ export default {
       socketStatus: false
     }
   },
-  mounted() {},
   created() {
     window.addEventListener('resize', this.handleResize)
     this.initWebSocket()
@@ -72,8 +71,7 @@ export default {
   },
   methods: {
     initWebSocket() {
-      var wsurl = 'ws://' + process.env.VUE_APP_SOCKET_URL + ':' + process.env.VUE_APP_SOCKET_PORT + '/ws'
-      wsurl = wsurl + '?token=666'
+      var wsurl = 'ws://' + process.env.VUE_APP_SOCKET_URL + ':' + process.env.VUE_APP_SOCKET_PORT + '/ws?token=xxx'
       this.websocket = new WebSocket(wsurl)
       this.websocket.onmessage = this.onMessage
       this.websocket.onopen = this.onOpen
