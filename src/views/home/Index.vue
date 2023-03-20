@@ -131,7 +131,7 @@ export default {
       }, this.timeout)
     },
     onMessage(e) {
-      // this.heatBeat()
+      this.heatBeat()
       console.log(e.data)
       const json = JSON.parse(e.data)
       console.log(json)
@@ -195,7 +195,6 @@ export default {
       this.websocket.send(msg)
     },
     childSend(res) {
-      console.log('发送数据')
       this.wsSend(res)
     },
     // message = route(4byte)+data
