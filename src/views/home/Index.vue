@@ -71,7 +71,8 @@ export default {
   },
   methods: {
     initWebSocket() {
-      var wsurl = 'ws://' + process.env.VUE_APP_SOCKET_URL + ':' + process.env.VUE_APP_SOCKET_PORT + '/ws?token=xxx'
+      const token = storage.get(storage.USER_TOKEN)
+      var wsurl = 'ws://' + process.env.VUE_APP_SOCKET_URL + ':' + process.env.VUE_APP_SOCKET_PORT + '/ws?token=' + token
       this.websocket = new WebSocket(wsurl)
       this.websocket.onmessage = this.onMessage
       this.websocket.onopen = this.onOpen
