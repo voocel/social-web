@@ -89,7 +89,7 @@ export default {
           token: storage.get(storage.USER_TOKEN)
         }
       }
-      this.wsSend(JSON.stringify(actions))
+      this.wsSend(2, JSON.stringify(actions))
       this.heatBeat()
       this.socketStatus = true
       this.dialogVisible = false
@@ -122,7 +122,7 @@ export default {
       this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj)
       this.timeoutObj = setTimeout(() => {
         if (this.websocket.readyState === 1) {
-          this.wsSend('{"cmd":"ping"}')
+          this.wsSend(2, '{"cmd":"ping"}')
         } else {
           this.reconnect()
         }
@@ -143,16 +143,16 @@ export default {
             console.log('连接服务器成功!')
             this.$message({
               showClose: true,
-              message: json.data.message,
+              message: json.data.msg,
               duration: 3000,
               type: 'success'
             })
             break
-          case 'msg':
+          case 'system':
             this.sysmsg = json.data.content
             this.$message({
               showClose: true,
-              message: json.data.message,
+              message: json.data.msg,
               duration: 3000,
               type: 'success'
             })
@@ -174,7 +174,7 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: json.message,
+              message: json.msg,
               duration: 3000,
               type: 'error'
             })
@@ -191,18 +191,18 @@ export default {
       }
       return buf
     },
-    wsSend(msg) {
-      msg = this.str2ab(msg)
+    wsSend(route, msg) {
+      msg = this.str2ab(route, msg)
       this.websocket.send(msg)
     },
     childSend(res) {
-      this.wsSend(res)
+      this.wsSend(4, res)
     },
     // message = route(4byte)+data
-    str2ab(str) {
+    str2ab(r, str) {
       var buf = new ArrayBuffer(str.length + 4) // 每个字符占用1个字节
       var bufView = new Uint8Array(buf)
-      var route = 4
+      var route = r
       bufView[0] = route
       for (var i = 0, strLen = str.length; i < strLen + 4; i++) {
         bufView[i + 4] = str.charCodeAt(i)
