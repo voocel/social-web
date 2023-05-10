@@ -59,9 +59,7 @@ export default {
     handleGetAlive() {},
     handleGetFriends() {
       this.$api.friend
-        .getFriends({
-          uid: userInfo.uid
-        })
+        .getFriends()
         .then(res => {
           if (res.data.code === 0) {
             this.friendsData = res.data.data
