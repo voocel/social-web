@@ -117,14 +117,10 @@ export default {
         return
       }
       const sendData = {
-        cmd: 'chat',
-        seq: 'xyz',
-        params: {
-          kind: 'msg',
-          sender: parseInt(userInfo.uid),
-          receiver: toUinfo.uid,
-          content: this.inputData
-        }
+        sender: parseInt(userInfo.uid),
+        receiver: toUinfo.uid,
+        content_type: 1,
+        content: this.inputData
       }
       this.$emit('childSend', JSON.stringify(sendData))
       this.recordMsg(this.inputData, toUinfo.uid)
