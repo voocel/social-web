@@ -68,7 +68,7 @@ export default {
       friendVisible: false,
       groupVisible: false,
       groupName: '',
-      friendId: '',
+      friendId: 0,
       applyInfo: '',
       groupNotice: ''
     }
@@ -78,11 +78,11 @@ export default {
       this.$api.friend
         .addFriendApply({
           uid: userInfo.uid,
-          friend_id: this.friendId,
+          friend_id: parseInt(this.friendId),
           apply_info: this.applyInfo
         })
         .then(res => {
-          if (res.data.code === 200) {
+          if (res.data.code === 0) {
             this.friendVisible = false
             this.$message({
               message: '发送申请成功,等待对方同意',
@@ -90,7 +90,7 @@ export default {
             })
           } else {
             this.$message({
-              message: res.data.msg,
+              message: res.data.message,
               type: 'error'
             })
           }
@@ -111,7 +111,7 @@ export default {
             })
           } else {
             this.$message({
-              message: res.data.msg,
+              message: res.data.message,
               type: 'error'
             })
           }

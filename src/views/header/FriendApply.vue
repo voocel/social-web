@@ -6,8 +6,8 @@
     </div>
     <el-dialog width="40%" title="好友申请" :visible.sync="dialogTableVisible" :close-on-click-modal="false">
       <el-table :data="applyData" :show-header="false">
-        <el-table-column property="nickname" width="110" />
-        <el-table-column property="apply_info" />
+        <el-table-column property="from_id" width="110" />
+        <el-table-column property="remark" />
         <el-table-column width="180">
           <template slot-scope="scope">
             <div v-if="scope.row.status == 0">
@@ -55,15 +55,15 @@ export default {
       console.log(index, row)
       this.$api.friend
         .agreeFriendApply({
-          apply_id: row.apply_id
+          from_id: row.from_id
         })
         .then(res => {
-          if (res.data.code === 200) {
+          if (res.data.code === 0) {
             this.handleGetFriendApply()
             console.log(res)
           } else {
             this.$message({
-              message: res.data.msg,
+              message: res.data.message,
               type: 'error'
             })
           }
@@ -76,12 +76,12 @@ export default {
           apply_id: row.apply_id
         })
         .then(res => {
-          if (res.data.code === 200) {
+          if (res.data.code === 0) {
             this.handleGetFriendApply()
             console.log(res)
           } else {
             this.$message({
-              message: res.data.msg,
+              message: res.data.message,
               type: 'error'
             })
           }
@@ -89,11 +89,12 @@ export default {
     },
     handleGetFriendApply() {
       this.$api.friend.getFriendApply().then(res => {
-        if (res.data.code === 200) {
-          this.applyData = res.data.result
+        if (res.data.code === 0) {
+          console.log(res.data.data)
+          this.applyData = res.data.data
         } else {
           this.$message({
-            message: res.data.msg,
+            message: res.data.message,
             type: 'error'
           })
         }

@@ -51,7 +51,7 @@ export default {
           })
           .then(res => {
             if (res) {
-              if (res.data.code === 200) {
+              if (res.data.code === 0) {
                 this.$message({
                   message: '注册成功',
                   type: 'success'

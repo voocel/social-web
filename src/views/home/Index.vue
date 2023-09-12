@@ -33,6 +33,7 @@ import Menus from './components/Menus'
 import Headers from '../header/Header'
 import LeftNav from './components/LeftNav'
 import tips from '@/utils/tips'
+import { message, route } from '@/utils/message'
 import storage from '@/common/storage'
 
 var userInfo = JSON.parse(storage.get(storage.USER_INFO))
@@ -81,16 +82,7 @@ export default {
       this.websocket.binaryType = 'arraybuffer'
     },
     onOpen() {
-      const actions = {
-        cmd: 'connect',
-        param: {
-          uid: parseInt(userInfo.uid),
-          appId: 1,
-          token: storage.get(storage.USER_TOKEN)
-        }
-      }
-      this.wsSend(2, JSON.stringify(actions))
-      this.heatBeat()
+      // this.heatBeat()
       this.socketStatus = true
       this.dialogVisible = false
     },
@@ -120,9 +112,9 @@ export default {
     heatBeat() {
       this.timeoutObj && clearTimeout(this.timeoutObj)
       this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj)
-      this.timeoutObj = setTimeout(() => {
+      this.timeoutObj = setInterval(() => {
         if (this.websocket.readyState === 1) {
-          this.wsSend(2, '{"cmd":"ping"}')
+          this.wsSend(1, '')
         } else {
           this.reconnect()
         }
@@ -132,92 +124,66 @@ export default {
       }, this.timeout)
     },
     onMessage(e) {
-      this.heatBeat()
-      console.log(e.data)
-      const json = JSON.parse(e.data)
+      console.log(e)
+      const json = message.unpack(e.data)
       console.log(json)
-      if (json.data.cmd !== 'pong') console.log(json)
-      if (json.code === 0) {
-        switch (json.data.cmd) {
-          case 'connect':
-            console.log('连接服务器成功!')
-            this.$message({
-              showClose: true,
-              message: json.data.msg,
-              duration: 3000,
-              type: 'success'
-            })
-            break
-          case 'system':
-            this.sysmsg = json.data.content
-            this.$message({
-              showClose: true,
-              message: json.data.msg,
-              duration: 3000,
-              type: 'success'
-            })
-            break
-          case 'chat':
-            console.log(json.data)
-            this.chat(json.data.content)
-            break
-
-          default:
-        }
-      } else {
-        if (json.type === 'online') {
-          this.onlineNum = json.data
-        }
-        if (json.code !== undefined) {
-          if (json.code === 401) {
+      if (json.route !== route.HEARBEAT) console.log(json)
+      switch (json.route) {
+        case route.AUTH:
+          setTimeout(() => {
             tips.reLoginTip()
-          } else {
-            this.$message({
-              showClose: true,
-              message: json.msg,
-              duration: 3000,
-              type: 'error'
-            })
-          }
-        }
+          }, 1000)
+
+          return
+        case route.CONNECT:
+          console.log('connect successfully!')
+          this.$message({
+            showClose: true,
+            message: json.data.msg,
+            duration: 3000,
+            type: 'success'
+          })
+          break
+        case route.SYSTEM:
+          this.sysmsg = json.data.content
+          this.$message({
+            showClose: true,
+            message: json.data.msg,
+            duration: 3000,
+            type: 'success'
+          })
+          break
+        case route.MESSAGE:
+          console.log(json.data)
+          this.chat(json.data)
+          break
+        case route.HEARBEAT:
+          break
+        default:
+          this.$message({
+            showClose: true,
+            message: json,
+            duration: 3000,
+            type: 'error'
+          })
       }
-    },
-    packMsg(str) {
-      var buf = new ArrayBuffer(str.length + 4)
-      var bufView = new Uint8Array(buf)
-      bufView[0] = 3
-      for (var i = 0, strLen = str.length; i < strLen + 4; i++) {
-        bufView[i + 4] = str.charCodeAt(i)
-      }
-      return buf
     },
     wsSend(route, msg) {
-      msg = this.str2ab(route, msg)
+      msg = message.pack(route, msg)
       this.websocket.send(msg)
     },
-    childSend(res) {
-      this.wsSend(4, res)
-    },
-    // message = route(4byte)+data
-    str2ab(r, str) {
-      var buf = new ArrayBuffer(str.length + 4) // 每个字符占用1个字节
-      var bufView = new Uint8Array(buf)
-      var route = r
-      bufView[0] = route
-      for (var i = 0, strLen = str.length; i < strLen + 4; i++) {
-        bufView[i + 4] = str.charCodeAt(i)
-      }
-      return buf
+    childSend(route, res) {
+      this.wsSend(route, res)
     },
     handleResize() {
       this.fullHeight = document.documentElement.clientHeight
     },
     chat(msg) {
-      if (this.$store.state.curSelected && this.$store.state.curSelected.uid === msg.from_uid) {
+      if (this.$store.state.curSelected && this.$store.state.curSelected.uid === msg.sender.id) {
         const pushData = {
-          nickname: msg.from_nickname,
-          uid: msg.from_uid,
-          avatar: msg.from_avatar,
+          nickname: msg.sender.nickname,
+          uid: msg.sender.id,
+          avatar: msg.sender.avatar,
           content: msg.content,
           self: false,
           timeline: msg.time
@@ -231,17 +197,17 @@ export default {
       let unread
       if (
         // JSON.stringify(aliveList) == "{}" ||
-        !aliveList[msg.from_uid] ||
-        isNaN(parseInt(aliveList[msg.from_uid].unread))
+        !aliveList[msg.sender.id] ||
+        isNaN(parseInt(aliveList[msg.sender.id].unread))
       ) {
         unread = 1
       } else {
-        unread = parseInt(aliveList[msg.from_uid].unread) + 1
+        unread = parseInt(aliveList[msg.sender.id].unread) + 1
       }
-      aliveList[msg.from_uid] = {
-        to_id: msg.from_uid,
-        nickname: msg.from_nickname,
-        avatar: msg.from_avatar,
+      aliveList[msg.sender.id] = {
+        to_id: msg.sender.id,
+        nickname: msg.sender.nickname,
+        avatar: msg.sender.avatar,
         last_msg: msg.content,
         last_time: this.common.getCurTime(1),
         unread: unread
@@ -250,22 +216,22 @@ export default {
     },
     recordAlive(msg) {
       const aliveList = storage.get('aliveList') ? JSON.parse(storage.get('aliveList')) : {}
-      aliveList[msg.from_uid] = {
-        to_id: msg.from_uid,
-        nickname: msg.from_nickname,
-        avatar: msg.from_avatar,
+      aliveList[msg.sender.id] = {
+        to_id: msg.sender.id,
+        nickname: msg.sender.nickname,
+        avatar: msg.sender.avatar,
         last_msg: msg.content,
         last_time: this.common.getCurTime(1),
         unread: 20
       }
     },
     recordMsg(msg) {
-      const msgkey = 'msg_' + userInfo.uid + '_' + msg.from_uid
+      const msgkey = 'msg_' + userInfo.uid + '_' + msg.sender.id
       const data = storage.get(msgkey) ? JSON.parse(storage.get(msgkey)) : []
       data.push({
-        uid: msg.from_uid,
-        nickname: msg.from_nickname,
-        avatar: msg.from_avatar,
+        uid: msg.sender.id,
+        nickname: msg.sender.nickname,
+        avatar: msg.sender.avatar,
         content: msg.content,
         self: false,
         timeline: this.common.getCurTime()

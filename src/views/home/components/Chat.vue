@@ -68,6 +68,7 @@ import ChatBox from '@/components/ChatBox'
 // import Icon from "@/components/Icon";
 import Emoji from '@/components/Emoji'
 import storage from '@/common/storage'
+import { route } from '@/utils/message'
 var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
@@ -117,12 +118,12 @@ export default {
         return
       }
       const sendData = {
-        sender: parseInt(userInfo.uid),
-        receiver: toUinfo.uid,
+        sender: { id: parseInt(userInfo.uid) },
+        receiver: { id: parseInt(toUinfo.uid) },
         content_type: 1,
         content: this.inputData
       }
-      this.$emit('childSend', JSON.stringify(sendData))
+      this.$emit('childSend', route.MESSAGE, sendData)
       this.recordMsg(this.inputData, toUinfo.uid)
       this.recordAlive(toUinfo, this.inputData)
       this.inputData = ''
