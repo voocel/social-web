@@ -17,23 +17,23 @@ const friend = {
   },
   // 获取好友申请
   getFriendApply(params) {
-    return http.get('/friend/getFriendApply', {
+    return http.get('/friend_apply/getFriendsApply', {
       params: params
     })
   },
   // 添加好友申请
   addFriendApply(params) {
-    return http.post('/friend/addFriendApply', qs.stringify(params))
+    return http.post('/friend_apply/addFriendApply', params)
   },
   // 同意好友申请
   agreeFriendApply(params) {
-    return http.get('/friend/agreeFriendApply', {
+    return http.get('/friend_apply/agreeFriendApply', {
       params: params
     })
   },
   // 拒绝好友申请
   refuseFriendApply(params) {
-    return http.get('/friend/refuseFriendApply', {
+    return http.get('/friend_apply/refuseFriendApply', {
       params: params
     })
   }

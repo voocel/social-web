@@ -11,7 +11,7 @@ const user = {
   },
   // 注册
   register(params) {
-    return http.post('/user/register', qs.stringify(params))
+    return http.post('/user/register', params)
   },
   // 用户列表
   userList() {
@@ -25,9 +25,7 @@ const user = {
   },
   // 获取个人表情
   getEmoji(params) {
-    return http.get('/user/getEmoji', {
-      params: params
-    })
+    return http.get('/user/getEmoji', qs.stringify(params))
   },
   // 添加个人表情
   addEmoji(params) {
@@ -37,7 +35,7 @@ const user = {
   },
   // 修改头像
   updateAvatar(params) {
-    return http.post('/user/updateAvatar', qs.stringify(params))
+    return http.post('/user/updateAvatar', params)
   }
 }
 
