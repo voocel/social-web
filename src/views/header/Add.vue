@@ -68,7 +68,7 @@ export default {
       friendVisible: false,
       groupVisible: false,
       groupName: '',
-      friendId: 0,
+      friendId: '',
       applyInfo: '',
       groupNotice: ''
     }

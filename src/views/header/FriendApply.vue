@@ -2,12 +2,17 @@
   <div>
     <div class="head-newfriend" @click="dialogTableVisible = true">
       <i style="font-size:20px;" class="iconfont">&#xeb92;</i>
-      <div class="newfriend-dot" />
+      <div v-if="hasNewFriend" class="newfriend-dot" />
     </div>
     <el-dialog width="40%" title="好友申请" :visible.sync="dialogTableVisible" :close-on-click-modal="false">
       <el-table :data="applyData" :show-header="false">
         <el-table-column property="from_id" width="110" />
         <el-table-column property="remark" />
+        <el-table-column property="created_at">
+          <template slot-scope="scope">
+            <span style="color: #aaa; font-size: 12px">{{ formatDate(scope.row.created_at,"yyyy-MM-dd HH:mm:ss") }}</span>
+          </template>
+        </el-table-column>
         <el-table-column width="180">
           <template slot-scope="scope">
             <div v-if="scope.row.status == 0">
@@ -35,12 +40,14 @@
 </template>
 
 <script>
+import { formatDate } from '@element-ui/src/utils/date-util'
 export default {
   name: 'FriendApply',
   data() {
     return {
       dialogTableVisible: false,
-      applyData: []
+      applyData: [],
+      hasNewFriend: false
     }
   },
   watch: {
@@ -50,7 +57,13 @@ export default {
       }
     }
   },
+  created() {
+    this.handleGetFriendApply()
+  },
   methods: {
+    formatDate(params) {
+      formatDate(params)
+    },
     handleAgree(index, row) {
       console.log(index, row)
       this.$api.friend
@@ -73,7 +86,7 @@ export default {
       console.log(index, row)
       this.$api.friend
         .refuseFriendApply({
-          apply_id: row.apply_id
+          from_id: row.from_id
         })
         .then(res => {
           if (res.data.code === 0) {
@@ -92,6 +105,11 @@ export default {
         if (res.data.code === 0) {
           console.log(res.data.data)
           this.applyData = res.data.data
+          this.applyData.forEach(e => {
+            if (e.status === 0) {
+              this.hasNewFriend = true
+            }
+          })
         } else {
           this.$message({
             message: res.data.message,

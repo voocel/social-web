@@ -9,26 +9,28 @@ const route = {
 }
 
 // message = seq(2byte)+route(4byte)+data
+// decodeURIComponent(escape(String.fromCharCode.apply(null, ab)))
 const message = {
   pack(route, data) {
     const str = JSON.stringify(data)
-    const dataLen = str.length
+    var strUtf8 = unescape(encodeURIComponent(str))
+    const dataLen = strUtf8.length
     const buf = new ArrayBuffer(dataLen + 6)
     const bufView = new DataView(buf)
     bufView.setUint16(0, 1, true)
     bufView.setUint32(2, route, true)
     for (var i = 0; i < dataLen; i++) {
-      bufView.setUint8(i + 6, str.charCodeAt(i))
+      bufView.setUint8(i + 6, strUtf8.codePointAt(i))
     }
     return buf
   },
 
-  unpack(buf) {
-    const bufView = new DataView(buf, 0, 6)
+  unpack(ab) {
+    const bufView = new DataView(ab, 0, 6)
     const seq = bufView.getUint16(0, true)
     const route = bufView.getUint32(2, true)
 
-    const dv = new DataView(buf, 6)
+    const dv = new DataView(ab, 6)
     const decoder = new TextDecoder('utf-8')
     const data = decoder.decode(dv)
     let dataJson

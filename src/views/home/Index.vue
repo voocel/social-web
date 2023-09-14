@@ -1,6 +1,5 @@
 <template>
   <el-container class="main" :style="{ height: fullHeight + 'px' }">
-    <div class="head">chat</div>
     <el-header>
       <headers :is-online="socketStatus" />
     </el-header>

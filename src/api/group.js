@@ -7,13 +7,13 @@ import qs from 'qs' // 根据需求是否导入qs模块
 const group = {
   // 创建群组
   createGroup(params) {
-    return http.post('/group/createGroup', qs.stringify(params))
+    return http.post('/group/create', {
+      params: params
+    })
   },
   // 获取群聊列表
   getGroups(params) {
-    return http.get('/group/getGroups', {
-      params: params
-    })
+    return http.get('/group/list', qs.stringify(params))
   }
 }
 
