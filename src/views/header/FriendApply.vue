@@ -4,16 +4,25 @@
       <i style="font-size:20px;" class="iconfont">&#xeb92;</i>
       <div v-if="hasNewFriend" class="newfriend-dot" />
     </div>
-    <el-dialog width="40%" title="好友申请" :visible.sync="dialogTableVisible" :close-on-click-modal="false">
+    <el-dialog width="40%" title="好友申请" :visible.sync="dialogTableVisible" :close-on-click-modal="true">
       <el-table :data="applyData" :show-header="false">
-        <el-table-column property="from_id" width="110" />
-        <el-table-column property="remark" />
-        <el-table-column property="created_at">
+        <el-table-column property="from_avatar" width="110">
           <template slot-scope="scope">
-            <span style="color: #aaa; font-size: 12px">{{ formatDate(scope.row.created_at,"yyyy-MM-dd HH:mm:ss") }}</span>
+            <img width="40px" height="40px" :src="scope.row.from_avatar" alt="avatar">
           </template>
         </el-table-column>
-        <el-table-column width="180">
+        <el-table-column property="remark">
+          <template slot-scope="scope">
+            <div style="font-size:15px;font-weight:bold">{{ scope.row.from_nickname }}</div>
+            <div style="font-size:12px;color:silver;">{{ scope.row.remark }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column property="created_at">
+          <template slot-scope="scope">
+            <span style="color: #aaa; font-size: 12px">{{ scope.row.created_at | filterDate }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column width="160">
           <template slot-scope="scope">
             <div v-if="scope.row.status == 0">
               <el-button
@@ -26,7 +35,7 @@
                 @click="handleAgree(scope.$index, scope.row)"
               >同意</el-button>
             </div>
-            <div v-else-if="scope.row.status == 1">
+            <div v-else-if="scope.row.status == 1" style="text-align:center;">
               <span style="color:silver;">已同意</span>
             </div>
             <div v-else>
@@ -40,9 +49,14 @@
 </template>
 
 <script>
-import { formatDate } from '@element-ui/src/utils/date-util'
 export default {
   name: 'FriendApply',
+  filters: {
+    filterDate(date) {
+      var json_date = new Date(date).toJSON()
+      return new Date(new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+    }
+  },
   data() {
     return {
       dialogTableVisible: false,
@@ -61,9 +75,6 @@ export default {
     this.handleGetFriendApply()
   },
   methods: {
-    formatDate(params) {
-      formatDate(params)
-    },
     handleAgree(index, row) {
       console.log(index, row)
       this.$api.friend

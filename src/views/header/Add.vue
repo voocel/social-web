@@ -18,7 +18,7 @@
           </span>
         </el-button>
       </el-popover>
-      <el-dialog title="添加" :visible.sync="friendVisible" :close-on-click-modal="false" width="24%" center>
+      <el-dialog title="添加" :visible.sync="friendVisible" :close-on-click-modal="true" width="24%" center>
         <div>
           <el-input v-model="friendId" placeholder="请输入用户ID" clearable>
             <template slot="prepend">用户ID</template>
@@ -35,7 +35,7 @@
           <el-button type="primary" @click="addFriend">确 定</el-button>
         </span>
       </el-dialog>
-      <el-dialog title="创建" :visible.sync="groupVisible" :close-on-click-modal="false" width="24%" center>
+      <el-dialog title="创建" :visible.sync="groupVisible" :close-on-click-modal="true" width="24%" center>
         <div>
           <el-input v-model="groupName" placeholder="请输入群组名称" clearable>
             <template slot="prepend">群组名称</template>

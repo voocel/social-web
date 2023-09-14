@@ -40,6 +40,7 @@
               </span>
             </div>
             <el-input
+              ref="content"
               v-model="inputData"
               class="content"
               type="textarea"
@@ -170,10 +171,12 @@ export default {
       this.inputData += em
       console.log(em)
       this.showEmoji.f = false
+      this.$refs.content.focus()
     },
     chooseEmoji(url) {
       console.log(url)
       this.showEmoji.f = false
+      this.$refs.content.focus()
     }
   }
 }
