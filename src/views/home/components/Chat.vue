@@ -11,7 +11,7 @@
         <el-row>
           <div class="chat-footer">
             <div class="action">
-              <span v-watchMouse="showEmoji" class="emoji">
+              <div v-watchMouse="showEmoji" class="emoji">
                 <!-- <icon
                   name="biaoqing1"
                   @clickIcon="showEmoji.f = !showEmoji.f"
@@ -27,17 +27,27 @@
                     />
                   </div>
                 </el-collapse-transition>
-              </span>
-              <span class="photo">
-                <i style="font-size:24px;" class="iconfont">&#xeba5;</i>
-              </span>
-              <span class="photo">
+              </div>
+              <div class="photo">
+                <el-upload
+                  ref="upload"
+                  class="upload-demo"
+                  action="handleUpload"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :auto-upload="true"
+                  :show-file-list="false"
+                >
+                  <i slot="trigger" style="font-size:24px;" class="iconfont">&#xeba5;</i>
+                </el-upload>
+              </div>
+              <div class="history">
                 <i style="font-size:24px;" class="iconfont">&#xeb98;</i>
-              </span>
+              </div>
               <!-- <span class="photo"><i class="el-icon-picture-outline"></i></span> -->
-              <span class="more">
+              <div class="more">
                 <i class="el-icon-circle-plus-outline" />
-              </span>
+              </div>
             </div>
             <el-input
               ref="content"
@@ -99,7 +109,22 @@ export default {
     }
   },
   methods: {
-    send() {
+    submitUpload() {
+      this.$refs.upload.submit()
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    handleUpload(e) {
+      console.log(e)
+    },
+    send(e) {
+      if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === 13) {
+        this.inputData = this.inputData.trimEnd()
+      }
       if (this.inputData === '') {
         this.$message.error('消息不能为空')
         return
@@ -219,6 +244,7 @@ export default {
         cursor: pointer;
       }
       .emoji {
+        float: left;
         // padding-left: 10px;
         text-align: center;
         font-size: 22px;
@@ -236,8 +262,14 @@ export default {
       }
       .photo {
         margin-left: 20px;
+        float: left;
+      }
+      .history {
+        margin-left: 20px;
+        float: left;
       }
       .more {
+        float: left;
         margin-left: 20px;
         font-size: 24px;
       }
