@@ -4,9 +4,9 @@
       <i style="font-size:20px;" class="iconfont">&#xeb92;</i>
       <div v-if="hasNewFriend" class="newfriend-dot" />
     </div>
-    <el-dialog width="40%" title="好友申请" :visible.sync="dialogTableVisible" :close-on-click-modal="true">
+    <el-dialog width="38%" title="好友申请" :visible.sync="dialogTableVisible" :close-on-click-modal="true">
       <el-table :data="applyData" :show-header="false">
-        <el-table-column property="from_avatar" width="110">
+        <el-table-column property="from_avatar" width="80">
           <template slot-scope="scope">
             <img width="40px" height="40px" :src="scope.row.from_avatar" alt="avatar">
           </template>
@@ -53,8 +53,7 @@ export default {
   name: 'FriendApply',
   filters: {
     filterDate(date) {
-      var json_date = new Date(date).toJSON()
-      return new Date(new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+      return new Date(new Date(date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
     }
   },
   data() {
