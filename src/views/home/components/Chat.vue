@@ -32,7 +32,9 @@
                 <el-upload
                   ref="upload"
                   class="upload-demo"
-                  action="handleUpload"
+                  action="#"
+                  :http-request="handleUpload"
+                  :before-upload="beforeUpload"
                   :on-preview="handlePreview"
                   :on-remove="handleRemove"
                   :auto-upload="true"
@@ -118,8 +120,29 @@ export default {
     handlePreview(file) {
       console.log(file)
     },
-    handleUpload(e) {
-      console.log(e)
+    handleUpload(file) {
+      console.log('start upload')
+      console.log(file)
+      const formData = new FormData()
+      formData.append('file', file.file)
+      this.$api.user.uploadFile(formData)
+        .then(res => {
+          console.log(res)
+          if (res.data.code === 0) {
+            this.$message({
+              message: '发送成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: res.data.message,
+              type: 'error'
+            })
+          }
+        })
+    },
+    beforeUpload(file) {
+      console.log('before upload')
     },
     send(e) {
       if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === 13) {
