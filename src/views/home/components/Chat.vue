@@ -81,7 +81,7 @@ import ChatBox from '@/components/ChatBox'
 // import Icon from "@/components/Icon";
 import Emoji from '@/components/Emoji'
 import storage from '@/common/storage'
-import { route } from '@/utils/message'
+import { route, contentType } from '@/utils/message'
 var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
@@ -121,8 +121,6 @@ export default {
       console.log(file)
     },
     handleUpload(file) {
-      console.log('start upload')
-      console.log(file)
       const formData = new FormData()
       formData.append('file', file.file)
       this.$api.user.uploadFile(formData)
@@ -133,6 +131,32 @@ export default {
               message: '发送成功',
               type: 'success'
             })
+
+            const pushData = {
+              self: true,
+              nickname: userInfo.nickname,
+              uid: userInfo.uid,
+              avatar: userInfo.avatar,
+              content: res.data.data.url,
+              content_type: contentType.IMAGE,
+              timeline: this.common.getCurTime()
+            }
+            this.$store.commit('pushMsg', pushData)
+
+            const toUinfo = this.$store.state.curSelected
+            if (!toUinfo) {
+              this.$message.error('请先选择要发送的用户')
+              return
+            }
+            const sendData = {
+              sender: { id: parseInt(userInfo.uid) },
+              receiver: { id: parseInt(toUinfo.uid) },
+              content: res.data.data.url,
+              content_type: contentType.IMAGE
+            }
+            this.$emit('childSend', route.MESSAGE, sendData)
+            this.recordMsg(res.data.data.url, contentType.IMAGE, toUinfo.uid)
+            this.recordAlive(toUinfo, '[图片]')
           } else {
             this.$message({
               message: res.data.message,
@@ -142,7 +166,11 @@ export default {
         })
     },
     beforeUpload(file) {
-      console.log('before upload')
+      var reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = function(e) {
+        // console.log(e.target.result)
+      }
     },
     send(e) {
       if (e.key === 'Enter' || e.code === 'Enter' || e.keyCode === 13) {
@@ -153,27 +181,28 @@ export default {
         return
       }
       const pushData = {
+        self: true,
         nickname: userInfo.nickname,
         uid: userInfo.uid,
         avatar: userInfo.avatar,
         content: this.inputData,
-        self: true,
+        content_type: contentType.TEXT,
         timeline: this.common.getCurTime()
       }
       this.$store.commit('pushMsg', pushData)
       const toUinfo = this.$store.state.curSelected
       if (!toUinfo) {
-        this.$message.error('请先选择发送的用户')
+        this.$message.error('请先选择要发送的用户')
         return
       }
       const sendData = {
         sender: { id: parseInt(userInfo.uid) },
         receiver: { id: parseInt(toUinfo.uid) },
-        content_type: 1,
-        content: this.inputData
+        content: this.inputData,
+        content_type: contentType.TEXT
       }
       this.$emit('childSend', route.MESSAGE, sendData)
-      this.recordMsg(this.inputData, toUinfo.uid)
+      this.recordMsg(this.inputData, contentType.TEXT, toUinfo.uid)
       this.recordAlive(toUinfo, this.inputData)
       this.inputData = ''
     },
@@ -181,7 +210,7 @@ export default {
     focusTxtContent() {
       document.querySelector('#txtContent input').focus()
     },
-    recordMsg(content, toUid) {
+    recordMsg(content, content_type, toUid) {
       const msgkey = 'msg_' + userInfo.uid + '_' + toUid
       let data = storage.get(msgkey)
       if (!data) {
@@ -190,11 +219,12 @@ export default {
         data = JSON.parse(data)
       }
       data.push({
+        self: true,
         uid: userInfo.uid,
         nickname: userInfo.nickname,
         avatar: userInfo.avatar,
         content: content,
-        self: true,
+        content_type: content_type,
         timeline: this.common.getCurTime()
       })
       storage.set(msgkey, JSON.stringify(data))

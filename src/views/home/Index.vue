@@ -180,11 +180,12 @@ export default {
     chat(msg) {
       if (this.$store.state.curSelected && this.$store.state.curSelected.uid === msg.sender.id) {
         const pushData = {
+          self: false,
           nickname: msg.sender.nickname,
           uid: msg.sender.id,
           avatar: msg.sender.avatar,
           content: msg.content,
-          self: false,
+          content_type: msg.content_type,
           timeline: msg.time
         }
         this.$store.commit('pushMsg', pushData)
