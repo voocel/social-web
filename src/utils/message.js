@@ -8,6 +8,14 @@ const route = {
   'SYSTEM': 7
 }
 
+const contentType = {
+  'TEXT': 1,
+  'FILE': 2,
+  'IMAGE': 3,
+  'AUDIO': 4,
+  'VIDEO': 5
+}
+
 // message = seq(2byte)+route(4byte)+data
 // decodeURIComponent(escape(String.fromCharCode.apply(null, ab)))
 const message = {
@@ -46,4 +54,4 @@ const message = {
   }
 }
 
-export { message, route }
+export { message, route, contentType }

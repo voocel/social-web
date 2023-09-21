@@ -16,13 +16,17 @@
             <img v-else class="uinfo-avatar" :src="avatarSrc" alt>
           </div>
           <div class="clear" />
-          <div class="msg-content self-msg-content">{{ item.content }}</div>
+          <el-image
+            v-if="item.content_type===contentType.IMAGE"
+            class="msg-image self-msg-content"
+            :src="item.content"
+            :preview-src-list="[item.content]"
+          />
+          <div v-else class="msg-text self-msg-content">{{ item.content }}</div>
         </div>
 
         <div v-else>
           <div class="msg-from other-msg-from">
-            <!-- <img :src="item.avatar" alt=""> -->
-            <!-- <avatar :size="36" :lighten="60" :username="item.nickname"></avatar> -->
             <avatar
               v-if="!item.avatar"
               :size="36"
@@ -34,7 +38,13 @@
             <span class="loc">[上海]</span>
           </div>
           <div class="clear" />
-          <div class="msg-content other-msg-content">{{ item.content }}</div>
+          <el-image
+            v-if="item.content_type===contentType.IMAGE"
+            class="msg-image other-msg-content"
+            :src="item.content"
+            :preview-src-list="[item.content]"
+          />
+          <div v-else class="msg-text other-msg-content">{{ item.content }}</div>
         </div>
         <div class="clear" />
       </li>
@@ -44,6 +54,8 @@
 
 <script>
 import storage from '@/common/storage'
+import { contentType } from '@/utils/message'
+
 var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
@@ -56,7 +68,8 @@ export default {
   },
   data() {
     return {
-      avatarSrc: ''
+      avatarSrc: '',
+      contentType: contentType
     }
   },
   created() {
@@ -133,13 +146,18 @@ export default {
         border-radius: 15px;
       }
     }
-    .msg-content {
+    .msg-text {
       min-width: 40px;
       margin-top: 5px;
       padding: 12px 10px;
       border-radius: 10px;
       word-wrap: break-word;
       word-break: break-all;
+    }
+    .msg-image {
+      width: 100px;
+      height: 100px;
+      padding: 12px 10px;
     }
   }
 }
