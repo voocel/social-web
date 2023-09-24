@@ -155,9 +155,9 @@ export default {
       word-break: break-all;
     }
     .msg-image {
-      width: 100px;
-      height: 100px;
-      padding: 12px 10px;
+      width: 120px;
+      height: 120px;
+      padding: 1px 1px;
     }
   }
 }

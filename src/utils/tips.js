@@ -1,11 +1,18 @@
 import { MessageBox } from 'element-ui'
 import { Message } from 'element-ui'
 import router from '@/router'
+
+let messageBoxFlag = 0
+
 const tips = {
   /**
    * 重新登陆确认提示
    */
   reLoginTip() {
+    if (messageBoxFlag !== 0) {
+      return
+    }
+    messageBoxFlag = 1
     MessageBox.confirm(
       '登录状态已过期，您可以继续留在该页面，或者重新登录',
       '系统提示',
@@ -14,11 +21,12 @@ const tips = {
         cancelButtonText: '取消',
         type: 'warning'
       }
-    )
-      .then(() => {
-        tips.toLogin()
-      })
-      .catch(() => {})
+    ).then(() => {
+      messageBoxFlag = 0
+      tips.toLogin()
+    }).catch(() => {
+      messageBoxFlag = 0
+    })
   },
 
   /**
