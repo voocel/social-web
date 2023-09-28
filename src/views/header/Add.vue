@@ -10,6 +10,9 @@
             <li @click="groupVisible = true">
               <i class="iconfont">&#xeb9d;</i>创建群组
             </li>
+            <li @click="joinGroupVisible = true">
+              <i class="iconfont">&#xeb9d;</i>加入群组
+            </li>
           </ul>
         </div>
         <el-button slot="reference" class="add-btn">
@@ -37,11 +40,11 @@
       </el-dialog>
       <el-dialog title="创建" :visible.sync="groupVisible" :close-on-click-modal="true" width="24%" center>
         <div>
-          <el-input v-model="groupName" placeholder="请输入群组名称" clearable>
+          <el-input v-model="name" placeholder="请输入群组名称" clearable>
             <template slot="prepend">群组名称</template>
           </el-input>
           <el-input
-            v-model="groupNotice"
+            v-model="notice"
             placeholder="请输入群组描述"
             clearable
           >
@@ -51,6 +54,24 @@
         <span slot="footer" class="dialog-footer">
           <el-button @click="groupVisible = false">取 消</el-button>
           <el-button type="primary" @click="createGroup">确 定</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog title="加入" :visible.sync="joinGroupVisible" :close-on-click-modal="true" width="24%" center>
+        <div>
+          <el-input v-model="groupId" placeholder="请输入群组ID" clearable>
+            <template slot="prepend">群组ID</template>
+          </el-input>
+          <el-input
+            v-model="remark"
+            placeholder="备注"
+            clearable
+          >
+            <template slot="prepend">备注</template>
+          </el-input>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="joinGroupVisible = false">取 消</el-button>
+          <el-button type="primary" @click="joinGroup">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -67,10 +88,13 @@ export default {
     return {
       friendVisible: false,
       groupVisible: false,
-      groupName: '',
+      joinGroupVisible: false,
+      name: '',
       friendId: '',
       applyInfo: '',
-      groupNotice: ''
+      notice: '',
+      groupId: 0,
+      remark: ''
     }
   },
   methods: {
@@ -99,14 +123,35 @@ export default {
     createGroup() {
       this.$api.group
         .createGroup({
-          name: this.groupName,
-          notice: this.groupNotice
+          name: this.name,
+          notice: this.notice
         })
         .then(res => {
-          if (res.data.code === 200) {
+          if (res.data.code === 0) {
             this.groupVisible = false
             this.$message({
               message: '创建成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: res.data.message,
+              type: 'error'
+            })
+          }
+        })
+    },
+    joinGroup() {
+      this.$api.group
+        .joinGroup({
+          group_id: parseInt(this.groupId),
+          remark: this.remark
+        })
+        .then(res => {
+          if (res.data.code === 0) {
+            this.groupVisible = false
+            this.$message({
+              message: '加入成功',
               type: 'success'
             })
           } else {
