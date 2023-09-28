@@ -11,10 +11,8 @@ const friend = {
     })
   },
   // 获取好友申请
-  getFriendApply(params) {
-    return http.get('/friend/getApply', {
-      params: params
-    })
+  getFriendApply() {
+    return http.get('/friend/getApply')
   },
   // 好友申请
   addFriendApply(params) {
@@ -22,15 +20,11 @@ const friend = {
   },
   // 同意好友申请
   agreeFriendApply(params) {
-    return http.get('/friend/agreeApply', {
-      params: params
-    })
+    return http.put('/friend/agreeApply', params)
   },
   // 拒绝好友申请
   refuseFriendApply(params) {
-    return http.get('/friend/refuseApply', {
-      params: params
-    })
+    return http.put('/friend/refuseApply', params)
   }
 }
 

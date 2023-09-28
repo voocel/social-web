@@ -35,7 +35,7 @@ const user = {
   },
   // 修改头像
   updateAvatar(params) {
-    return http.post('/user/updateAvatar', params)
+    return http.put('/user/updateAvatar', params)
   },
   // 上传图片
   uploadFile(params) {

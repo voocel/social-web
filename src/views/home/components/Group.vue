@@ -11,7 +11,16 @@
         <el-row>
           <el-col :span="4">
             <div class="avatar">
-              <img :src="item.avatar" alt>
+              <div v-if="item.avatar == ''">
+                <avatar
+                  :size="36"
+                  :lighten="60"
+                  :username="item.name"
+                />
+              </div>
+              <div v-else>
+                <img class="custom-img" height="40" width="40" :src="item.avatar" alt="">
+              </div>
             </div>
           </el-col>
           <el-col :span="20">

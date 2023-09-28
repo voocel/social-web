@@ -21,7 +21,7 @@
                     />
                   </div>
                   <div v-else>
-                    <img height="36" width="36" :src="item.avatar" alt="">
+                    <img class="custom-img" height="40" width="40" :src="item.avatar" alt="">
                   </div>
                 </div>
               </el-col>
@@ -126,18 +126,19 @@ export default {
     cursor: pointer;
   }
   .alive-item {
-    line-height: 60px;
+    line-height: 58px;
     background: rgb(255, 255, 255);
-    margin-top: 1px;
     border-bottom: 1px #f6f6f6 solid;
     .avatar {
-      margin-top: 11px;
       margin-left: 8px;
       // img {
       //   width: 40px;
       //   height: 40px;
       //   margin-left: 8px;
       // }
+    }
+    .custom-img{
+      border-radius: 50%;
     }
     .content {
       line-height: 30px;
