@@ -11,15 +11,15 @@
         <el-row>
           <el-col :span="4">
             <div class="avatar">
-              <div v-if="item.avatar == ''">
+              <div v-if="item.avatar == ''" class="avatar-default">
                 <avatar
-                  :size="36"
+                  :size="40"
                   :lighten="60"
                   :username="item.name"
                 />
               </div>
               <div v-else>
-                <img class="custom-img" height="40" width="40" :src="item.avatar" alt="">
+                <img height="40" width="40" :src="item.avatar" alt="">
               </div>
             </div>
           </el-col>
@@ -74,10 +74,14 @@ export default {
     margin-top: 1px;
     border-bottom: 1px #f6f6f6 solid;
     .avatar {
+      margin-left: 8px;
       img {
         width: 40px;
         height: 40px;
-        margin-left: 8px;
+      };
+      .avatar-default {
+        line-height: 60px;
+        margin-top: 10px;
       }
     }
     .group-name {
