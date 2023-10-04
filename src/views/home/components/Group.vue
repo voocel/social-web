@@ -1,33 +1,35 @@
 <template>
   <div class="groups">
     <ul>
-      <li
-        v-for="(item, index) in groupsData"
-        :key="index"
-        class="groups-item"
-        :class="{ active: activeClass == index }"
-        @click="selectGroup(index, item)"
-      >
-        <el-row>
-          <el-col :span="4">
-            <div class="avatar">
-              <div v-if="item.avatar == ''" class="avatar-default">
-                <avatar
-                  :size="40"
-                  :lighten="60"
-                  :username="item.name"
-                />
+      <router-link to="/chat">
+        <li
+          v-for="(item, index) in groupsData"
+          :key="index"
+          class="groups-item"
+          :class="{ active: activeClass == index }"
+          @click="selectGroup(index, item)"
+        >
+          <el-row>
+            <el-col :span="4">
+              <div class="avatar">
+                <div v-if="item.avatar == ''" class="avatar-default">
+                  <avatar
+                    :size="40"
+                    :lighten="60"
+                    :username="item.name"
+                  />
+                </div>
+                <div v-else>
+                  <img height="40" width="40" :src="item.avatar" alt="">
+                </div>
               </div>
-              <div v-else>
-                <img height="40" width="40" :src="item.avatar" alt="">
-              </div>
-            </div>
-          </el-col>
-          <el-col :span="20">
-            <div class="group-name">{{ item.name }}</div>
-          </el-col>
-        </el-row>
-      </li>
+            </el-col>
+            <el-col :span="20">
+              <div class="group-name">{{ item.name }}</div>
+            </el-col>
+          </el-row>
+        </li>
+      </router-link>
     </ul>
   </div>
 </template>
