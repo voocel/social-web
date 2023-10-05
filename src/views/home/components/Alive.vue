@@ -81,7 +81,6 @@ export default {
   },
   methods: {
     selectUser(index, uinfo) {
-      this.$store.commit('clearMsg')
       this.activeClass = index
       this.$store.commit('hasNewMsg')
       this.$store.commit('setCurSelectUser', {

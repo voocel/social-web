@@ -117,8 +117,12 @@ export default {
     }
   },
   watch: {
-    newMsg() {
-      this.loadLocalMsg()
+    newMsg: {
+      handler() {
+        this.loadLocalMsg()
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {

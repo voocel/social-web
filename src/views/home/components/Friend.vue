@@ -35,9 +35,6 @@
 </template>
 
 <script>
-import storage from '@/common/storage'
-var userInfo = JSON.parse(storage.get(storage.USER_INFO))
-
 export default {
   name: 'Friend',
   props: {
@@ -53,20 +50,13 @@ export default {
   },
   methods: {
     selectFriend(index, uinfo) {
-      this.$store.commit('clearMsg')
       this.activeClass = index
-      const localMsg = this.getRecord(uinfo.friend_id)
-      this.$store.commit('pushMsg', localMsg)
       this.$store.commit('setCurSelectUser', {
         uid: uinfo.friend_id,
         nickname: uinfo.nickname,
         avatar: uinfo.avatar
       })
-    },
-    getRecord(toUid) {
-      const msgkey = 'msg_' + userInfo.uid + '_' + toUid
-      const msg = storage.get(msgkey)
-      return JSON.parse(msg)
+      this.$store.commit('hasNewMsg')
     }
   }
 }
