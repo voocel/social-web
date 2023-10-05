@@ -2,7 +2,7 @@
   <div>
     <el-container>
       <el-header>
-        <div class="to-name">{{ curNickname }}</div>
+        <div class="to-name">{{ selectedUser['nickname'] }}</div>
       </el-header>
       <el-main v-chat-scroll>
         <chat-box :msg-datas="records" />
@@ -82,6 +82,8 @@ import ChatBox from '@/components/ChatBox'
 import Emoji from '@/components/Emoji'
 import storage from '@/common/storage'
 import { route, contentType } from '@/utils/message'
+import idb from '@/store/idb'
+
 var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
@@ -93,6 +95,7 @@ export default {
   },
   data() {
     return {
+      msgDatas: [],
       inputData: '',
       curChatNickname: '',
       showEmoji: { f: false }
@@ -100,14 +103,22 @@ export default {
   },
   computed: {
     records() {
-      return this.$store.state.msgData
+      return this.msgDatas
     },
-    curNickname() {
+    newMsg() {
+      return this.$store.state.newMsg
+    },
+    selectedUser() {
       if (this.$store.state.curSelected) {
-        return this.$store.state.curSelected['nickname']
+        return this.$store.state.curSelected
       } else {
         return ''
       }
+    }
+  },
+  watch: {
+    newMsg() {
+      this.loadLocalMsg()
     }
   },
   methods: {
@@ -210,16 +221,23 @@ export default {
     focusTxtContent() {
       document.querySelector('#txtContent input').focus()
     },
-    recordMsg(content, content_type, toUid) {
-      const msgkey = 'msg_' + userInfo.uid + '_' + toUid
-      let data = storage.get(msgkey)
-      if (!data) {
-        data = []
-      } else {
-        data = JSON.parse(data)
+    loadLocalMsg() {
+      const condition = {
+        where: (object) => {
+          if (object.sender_id === userInfo.uid && object.receiver_id === this.selectedUser['uid']) return true
+          if (object.receiver_id === userInfo.uid && object.sender_id === this.selectedUser['uid']) return true
+        }
       }
-      data.push({
+      idb().findObject('msg', condition).then((data) => {
+        console.log(data)
+        this.msgDatas = data
+      })
+    },
+    recordMsg(content, content_type, toUid) {
+      idb().addObject('msg', {
         self: true,
+        sender_id: userInfo.uid,
+        receiver_id: toUid,
         uid: userInfo.uid,
         nickname: userInfo.nickname,
         avatar: userInfo.avatar,
@@ -227,7 +245,7 @@ export default {
         content_type: content_type,
         timeline: this.common.getCurTime()
       })
-      storage.set(msgkey, JSON.stringify(data))
+      this.loadLocalMsg()
     },
     recordAlive(Uinfo, lasgMsg) {
       let aliveList = this.$store.state.aliveList

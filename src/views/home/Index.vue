@@ -34,6 +34,7 @@ import LeftNav from './components/LeftNav'
 import tips from '@/utils/tips'
 import { message, route } from '@/utils/message'
 import storage from '@/common/storage'
+import idb from '@/store/idb'
 
 var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
@@ -192,7 +193,8 @@ export default {
       }
       this.recordAlive(msg)
       this.recordMsg(msg)
-
+    },
+    recordAlive(msg) {
       const aliveList = this.$store.state.aliveList
       let unread
       if (
@@ -214,29 +216,19 @@ export default {
       }
       this.$store.commit('setAliveList', aliveList)
     },
-    recordAlive(msg) {
-      const aliveList = storage.get('aliveList') ? JSON.parse(storage.get('aliveList')) : {}
-      aliveList[msg.sender.id] = {
-        to_id: msg.sender.id,
-        nickname: msg.sender.nickname,
-        avatar: msg.sender.avatar,
-        last_msg: msg.content,
-        last_time: this.common.getCurTime(1),
-        unread: 20
-      }
-    },
     recordMsg(msg) {
-      const msgkey = 'msg_' + userInfo.uid + '_' + msg.sender.id
-      const data = storage.get(msgkey) ? JSON.parse(storage.get(msgkey)) : []
-      data.push({
-        uid: msg.sender.id,
+      idb().addObject('msg', {
+        self: false,
+        sender_id: msg.sender.id,
+        receiver_id: userInfo.uid,
+        uid: userInfo.uid,
         nickname: msg.sender.nickname,
         avatar: msg.sender.avatar,
         content: msg.content,
-        self: false,
+        content_type: msg.content_type,
         timeline: this.common.getCurTime()
       })
-      storage.set(msgkey, JSON.stringify(data))
+      this.$store.commit('hasNewMsg')
     }
   }
 }

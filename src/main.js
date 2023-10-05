@@ -24,6 +24,11 @@ Vue.component('Avatar', Avatar)
 Vue.prototype.common = Common
 Vue.prototype.$api = Api
 
+// if (process.env.NODE_ENV === 'development') {
+//   const VConsole = require('vconsole')
+//   new VConsole() // eslint-disable-line
+// }
+
 // 导航守卫
 router.beforeEach(async(to, from, next) => {
   if (to.meta.requiresAuth === false) {

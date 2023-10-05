@@ -58,8 +58,6 @@
 </template>
 
 <script>
-import storage from '@/common/storage'
-var userInfo = JSON.parse(storage.get(storage.USER_INFO))
 
 export default {
   name: 'Alive',
@@ -85,8 +83,7 @@ export default {
     selectUser(index, uinfo) {
       this.$store.commit('clearMsg')
       this.activeClass = index
-      const localMsg = this.getRecord(uinfo.to_id)
-      this.$store.commit('pushMsg', localMsg)
+      this.$store.commit('hasNewMsg')
       this.$store.commit('setCurSelectUser', {
         index: index,
         uid: uinfo.to_id,
@@ -94,12 +91,6 @@ export default {
         avatar: uinfo.avatar
       })
       this.clearUnread(uinfo.to_id)
-    },
-    // 拉取本地聊天记录
-    getRecord(toUid) {
-      const msgkey = 'msg_' + userInfo.uid + '_' + toUid
-      const msg = storage.get(msgkey)
-      return JSON.parse(msg)
     },
     // 清空未读消息数
     clearUnread(toUid) {

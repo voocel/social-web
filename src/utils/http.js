@@ -49,7 +49,7 @@ instance.defaults.headers.post['Content-Type'] =
  * 请求拦截器
  * 每次请求前，如果存在token则在请求头中携带token
  */
-console.log(storage.get(storage.USER_TOKEN))
+// console.log(storage.get(storage.USER_TOKEN))
 instance.interceptors.request.use(
   config => {
     // const token = store.state.token;

@@ -113,7 +113,6 @@ export default {
     handleGetFriendApply() {
       this.$api.friend.getFriendApply().then(res => {
         if (res.data.code === 0) {
-          console.log(res.data.data)
           this.applyData = res.data.data
           this.applyData.forEach(e => {
             if (e.status === 0) {
