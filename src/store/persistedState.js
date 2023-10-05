@@ -1,10 +1,10 @@
 export default function persisted(options = { key: 'store' }) {
   return store => {
-    let sessionStore = JSON.parse(sessionStorage.getItem(options.key))
-    sessionStore && store.replaceState(sessionStore)
-    sessionStore = null
+    let Storage = JSON.parse(localStorage.getItem(options.key))
+    Storage && store.replaceState(Storage)
+    Storage = null
     store.subscribe((mutation, state) => {
-      sessionStorage.setItem(options.key, JSON.stringify(state))
+      localStorage.setItem(options.key, JSON.stringify(state))
     })
   }
 }

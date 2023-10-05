@@ -5,6 +5,7 @@ import persisted from './persistedState.js'
 Vue.use(Vuex)
 
 const state = {
+  newMsg: 0,
   token: '',
   user: {}, // ICON组件中用到
   curSelected: null,
@@ -46,6 +47,9 @@ const mutations = {
   },
   setAliveList(state) {
     state.aliveList = Object.assign({}, state.aliveList)
+  },
+  hasNewMsg(state) {
+    state.newMsg++
   }
 }
 
