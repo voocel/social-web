@@ -83,19 +83,23 @@ export default {
     selectUser(index, uinfo) {
       this.activeClass = index
       this.$store.commit('hasNewMsg')
-      this.$store.commit('setCurSelectUser', {
+      this.$store.commit('setCurSelected', {
         index: index,
-        uid: uinfo.to_id,
+        id: uinfo.id,
         nickname: uinfo.nickname,
-        avatar: uinfo.avatar
+        avatar: uinfo.avatar,
+        route: uinfo.route
       })
+      this.$store.commit('hasNewMsg')
       this.clearUnread(uinfo.to_id)
     },
     // 清空未读消息数
     clearUnread(toUid) {
       const aliveList = this.$store.state.aliveList
-      aliveList[toUid].unread = ''
-      this.$store.commit('setAliveList', aliveList)
+      if (aliveList[toUid]) {
+        aliveList[toUid].unread = ''
+        this.$store.commit('setAliveList', aliveList)
+      }
     }
   }
 }

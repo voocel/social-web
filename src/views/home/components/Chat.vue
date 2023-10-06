@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container>
+    <el-container direction="vertical">
       <el-header>
         <div class="to-name">{{ selectedUser['nickname'] }}</div>
       </el-header>
@@ -8,69 +8,67 @@
         <chat-box :msg-datas="records" />
       </el-main>
       <el-footer>
-        <el-row>
-          <div class="chat-footer">
-            <div class="action">
-              <div v-watchMouse="showEmoji" class="emoji">
-                <!-- <icon
-                  name="biaoqing1"
-                  @clickIcon="showEmoji.f = !showEmoji.f"
-                  cursor="pointer"
-                  title="发送表情"
-                ></icon>-->
-                <span @click="showEmoji.f = !showEmoji.f">😄</span>
-                <el-collapse-transition>
-                  <div v-show="showEmoji.f" class="emoji-container">
-                    <emoji
-                      @chooseEmoji="chooseEmoji"
-                      @chooseEmojiDefault="chooseEmojiDefault"
-                    />
-                  </div>
-                </el-collapse-transition>
-              </div>
-              <div class="photo">
-                <el-upload
-                  ref="upload"
-                  class="upload-demo"
-                  action="#"
-                  :http-request="handleUpload"
-                  :before-upload="beforeUpload"
-                  :on-preview="handlePreview"
-                  :on-remove="handleRemove"
-                  :auto-upload="true"
-                  :show-file-list="false"
-                >
-                  <i slot="trigger" style="font-size:24px;" class="iconfont">&#xeba5;</i>
-                </el-upload>
-              </div>
-              <div class="history">
-                <i style="font-size:24px;" class="iconfont">&#xeb98;</i>
-              </div>
-              <!-- <span class="photo"><i class="el-icon-picture-outline"></i></span> -->
-              <div class="more">
-                <i class="el-icon-circle-plus-outline" />
-              </div>
+        <div class="chat-footer">
+          <div class="action">
+            <div v-watchMouse="showEmoji" class="emoji">
+              <!-- <icon
+                name="biaoqing1"
+                @clickIcon="showEmoji.f = !showEmoji.f"
+                cursor="pointer"
+                title="发送表情"
+              ></icon>-->
+              <span @click="showEmoji.f = !showEmoji.f">😄</span>
+              <el-collapse-transition>
+                <div v-show="showEmoji.f" class="emoji-container">
+                  <emoji
+                    @chooseEmoji="chooseEmoji"
+                    @chooseEmojiDefault="chooseEmojiDefault"
+                  />
+                </div>
+              </el-collapse-transition>
             </div>
-            <el-input
-              ref="content"
-              v-model="inputData"
-              class="content"
-              type="textarea"
-              :autosize="{ minRows: 6, maxRows: 10 }"
-              placeholder="请输入内容"
-              maxlength="60"
-              show-word-limit
-              @keyup.enter.native="send"
-            />
-            <div class="send-btn">
-              <el-button
-                type="success"
-                size="small"
-                @click="send"
-              >发送</el-button>
+            <div class="photo">
+              <el-upload
+                ref="upload"
+                class="upload-demo"
+                action="#"
+                :http-request="handleUpload"
+                :before-upload="beforeUpload"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :auto-upload="true"
+                :show-file-list="false"
+              >
+                <i slot="trigger" style="font-size:24px;" class="iconfont">&#xeba5;</i>
+              </el-upload>
+            </div>
+            <div class="history">
+              <i style="font-size:24px;" class="iconfont">&#xeb98;</i>
+            </div>
+            <!-- <span class="photo"><i class="el-icon-picture-outline"></i></span> -->
+            <div class="more">
+              <i class="el-icon-circle-plus-outline" />
             </div>
           </div>
-        </el-row>
+          <el-input
+            ref="content"
+            v-model="inputData"
+            class="content"
+            type="textarea"
+            :autosize="{ minRows: 6, maxRows: 10 }"
+            placeholder="请输入内容"
+            maxlength="70"
+            show-word-limit
+            @keyup.enter.native="send"
+          />
+          <div class="send-btn">
+            <el-button
+              type="success"
+              size="small"
+              @click="send"
+            >发送</el-button>
+          </div>
+        </div>
       </el-footer>
     </el-container>
   </div>
@@ -158,20 +156,20 @@ export default {
             }
             this.$store.commit('pushMsg', pushData)
 
-            const toUinfo = this.$store.state.curSelected
-            if (!toUinfo) {
+            const toInfo = this.$store.state.curSelected
+            if (!toInfo) {
               this.$message.error('请先选择要发送的用户')
               return
             }
             const sendData = {
               sender: { id: parseInt(userInfo.uid) },
-              receiver: { id: parseInt(toUinfo.uid) },
+              receiver: { id: parseInt(toInfo.id) },
               content: res.data.data.url,
               content_type: contentType.IMAGE
             }
             this.$emit('childSend', route.MESSAGE, sendData)
-            this.recordMsg(res.data.data.url, contentType.IMAGE, toUinfo.uid)
-            this.recordAlive(toUinfo, '[图片]')
+            this.recordMsg(res.data.data.url, contentType.IMAGE, toInfo.uid)
+            this.recordAlive(toInfo, '[图片]')
           } else {
             this.$message({
               message: res.data.message,
@@ -205,20 +203,20 @@ export default {
         timeline: this.common.getCurTime()
       }
       this.$store.commit('pushMsg', pushData)
-      const toUinfo = this.$store.state.curSelected
-      if (!toUinfo) {
-        this.$message.error('请先选择要发送的用户')
+      const toInfo = this.$store.state.curSelected
+      if (!toInfo) {
+        this.$message.error('请先选择要发送的对象')
         return
       }
       const sendData = {
         sender: { id: parseInt(userInfo.uid) },
-        receiver: { id: parseInt(toUinfo.uid) },
+        receiver: { id: parseInt(toInfo.id) },
         content: this.inputData,
         content_type: contentType.TEXT
       }
-      this.$emit('childSend', route.MESSAGE, sendData)
-      this.recordMsg(this.inputData, contentType.TEXT, toUinfo.uid)
-      this.recordAlive(toUinfo, this.inputData)
+      this.$emit('childSend', toInfo.route, sendData)
+      this.recordMsg(this.inputData, contentType.TEXT, toInfo.id)
+      this.recordAlive(toInfo, this.inputData)
       this.inputData = ''
     },
     // 聚焦输入框
@@ -228,12 +226,11 @@ export default {
     loadLocalMsg() {
       const condition = {
         where: (object) => {
-          if (object.sender_id === userInfo.uid && object.receiver_id === this.selectedUser['uid']) return true
-          if (object.receiver_id === userInfo.uid && object.sender_id === this.selectedUser['uid']) return true
+          if (object.sender_id === userInfo.uid && object.receiver_id === this.selectedUser.id) return true
+          if (object.receiver_id === userInfo.uid && object.sender_id === this.selectedUser.id) return true
         }
       }
       idb().findObject('msg', condition).then((data) => {
-        console.log(data)
         this.msgDatas = data
       })
     },
@@ -251,19 +248,20 @@ export default {
       })
       this.loadLocalMsg()
     },
-    recordAlive(Uinfo, lasgMsg) {
+    recordAlive(toInfo, lasgMsg) {
       let aliveList = this.$store.state.aliveList
       const unread = ''
       if (!aliveList) {
         aliveList = {}
       }
-      aliveList[Uinfo.uid] = {
-        to_id: Uinfo.uid,
-        nickname: Uinfo.nickname,
-        avatar: Uinfo.avatar,
+      aliveList[toInfo.id] = {
+        id: toInfo.id,
+        nickname: toInfo.nickname,
+        avatar: toInfo.avatar,
         last_msg: lasgMsg,
         last_time: this.common.getCurTime(1),
-        unread: unread
+        unread: unread,
+        route: toInfo.route
       }
       this.$store.commit('setAliveList', aliveList)
     },
@@ -303,17 +301,26 @@ export default {
     text-align: left;
   }
 }
+.el-main {
+  width: 100%;
+  // height: 100vw;
+  // aspect-ratio: 16/16;
+  color: #333;
+  height: calc(100vh - 320px);
+  padding: 2px 10px;
+}
 .el-footer {
   color: #333;
   text-align: center;
-  line-height: 60px;
   background-color: #eee;
   padding: 0;
+  // height: calc(35vh);
   .chat-footer {
+    height: 100%;
     .action {
       height: 40px;
       line-height: 40px;
-      background: rgb(247, 245, 245);
+      background: rgb(238, 238, 237);
       text-align: left;
       span {
         cursor: pointer;
@@ -336,12 +343,14 @@ export default {
         }
       }
       .photo {
-        margin-left: 20px;
         float: left;
+        margin-left: 20px;
+        font-size: 24px;
       }
       .history {
-        margin-left: 20px;
         float: left;
+        margin-left: 20px;
+        font-size: 24px;
       }
       .more {
         float: left;
@@ -360,13 +369,6 @@ export default {
 }
 .clear {
   clear: both;
-}
-.el-main {
-  color: #333;
-  text-align: center;
-  height: calc(65vh - 50px);
-  padding: 10px;
-  // min-height: calc(90vh - 105px);
 }
 body > .el-container {
   margin-bottom: 40px;
