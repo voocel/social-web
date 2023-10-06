@@ -10,7 +10,7 @@
       <el-aside class="dialog" width="360px">
         <left-nav />
       </el-aside>
-      <el-main>
+      <el-main class="chat-main">
         <el-dialog
           title="提示"
           :visible.sync="dialogVisible"
@@ -154,8 +154,9 @@ export default {
           })
           break
         case route.MESSAGE:
+        case route.GROUP_MESSAGE:
           console.log(json.data)
-          this.chat(json.data)
+          this.chat(json.data, json.route)
           break
         case route.HEARBEAT:
           break
@@ -178,8 +179,8 @@ export default {
     handleResize() {
       this.fullHeight = document.documentElement.clientHeight
     },
-    chat(msg) {
-      if (this.$store.state.curSelected && this.$store.state.curSelected.uid === msg.sender.id) {
+    chat(msg, route) {
+      if (this.$store.state.curSelected && this.$store.state.curSelected.id === msg.sender.id) {
         const pushData = {
           self: false,
           nickname: msg.sender.nickname,
@@ -191,10 +192,10 @@ export default {
         }
         this.$store.commit('pushMsg', pushData)
       }
-      this.recordAlive(msg)
+      this.recordAlive(msg, route)
       this.recordMsg(msg)
     },
-    recordAlive(msg) {
+    recordAlive(msg, route) {
       const aliveList = this.$store.state.aliveList
       let unread
       if (
@@ -207,12 +208,13 @@ export default {
         unread = parseInt(aliveList[msg.sender.id].unread) + 1
       }
       aliveList[msg.sender.id] = {
-        to_id: msg.sender.id,
+        id: msg.sender.id,
         nickname: msg.sender.nickname,
         avatar: msg.sender.avatar,
         last_msg: msg.content,
         last_time: this.common.getCurTime(1),
-        unread: unread
+        unread: unread,
+        route: route
       }
       this.$store.commit('setAliveList', aliveList)
     },

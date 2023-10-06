@@ -36,8 +36,8 @@ const mutations = {
   clearMsg(state) {
     state.msgData = []
   },
-  setCurSelectUser(state, uid) {
-    state.curSelected = uid
+  setCurSelected(state, info) {
+    state.curSelected = info
   },
   changeNetwork(state, status) {
     state.network = status

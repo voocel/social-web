@@ -454,7 +454,7 @@ const indexedDB = () => {
     const _start = page.start || 0
     const _count = page.count || 0
     const _end = _start + _count
-    const _description = page.description || 'prev' // 默认倒序
+    const _description = page.description || 'next' // 默认升序
 
     // 查询条件，按照主键或者索引查询
     let keyRange = null

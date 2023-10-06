@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import { route } from '@/utils/message'
 export default {
   name: 'Group',
   props: {
@@ -49,13 +50,23 @@ export default {
     }
   },
   methods: {
-    selectGroup(index, uinfo) {
+    selectGroup(index, info) {
       this.activeClass = index
-      this.$store.commit('setCurSelectUser', {
-        uid: uinfo.friend_id,
-        nickname: uinfo.nickname,
-        avatar: uinfo.avatar
+      this.$store.commit('setCurSelected', {
+        id: info.id,
+        nickname: info.name,
+        avatar: info.avatar,
+        route: route.GROUP_MESSAGE
       })
+      this.$store.commit('hasNewMsg')
+      this.clearUnread(info.id)
+    },
+    clearUnread(toUid) {
+      const aliveList = this.$store.state.aliveList
+      if (aliveList[toUid]) {
+        aliveList[toUid].unread = ''
+        this.$store.commit('setAliveList', aliveList)
+      }
     }
   }
 }
