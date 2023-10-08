@@ -145,17 +145,6 @@ export default {
               type: 'success'
             })
 
-            const pushData = {
-              self: true,
-              nickname: userInfo.nickname,
-              uid: userInfo.uid,
-              avatar: userInfo.avatar,
-              content: res.data.data.url,
-              content_type: contentType.IMAGE,
-              timeline: this.common.getCurTime()
-            }
-            this.$store.commit('pushMsg', pushData)
-
             const toInfo = this.$store.state.curSelected
             if (!toInfo) {
               this.$message.error('请先选择要发送的用户')
@@ -193,16 +182,7 @@ export default {
         this.$message.error('消息不能为空')
         return
       }
-      const pushData = {
-        self: true,
-        nickname: userInfo.nickname,
-        uid: userInfo.uid,
-        avatar: userInfo.avatar,
-        content: this.inputData,
-        content_type: contentType.TEXT,
-        timeline: this.common.getCurTime()
-      }
-      this.$store.commit('pushMsg', pushData)
+
       const toInfo = this.$store.state.curSelected
       if (!toInfo) {
         this.$message.error('请先选择要发送的对象')
@@ -307,7 +287,7 @@ export default {
   // aspect-ratio: 16/16;
   color: #333;
   height: calc(100vh - 320px);
-  padding: 2px 10px;
+  padding: 5px 10px;
 }
 .el-footer {
   color: #333;

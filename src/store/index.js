@@ -10,7 +10,6 @@ const state = {
   user: {}, // ICON组件中用到
   curSelected: null,
   network: true,
-  msgData: [],
   aliveList: {}
 }
 
@@ -24,18 +23,15 @@ const state = {
 // }
 
 const mutations = {
-  pushMsg(state, data) {
-    if (data) {
-      if (data.constructor === Array) {
-        state.msgData.push(...data)
-      } else {
-        state.msgData.push(data)
-      }
-    }
-  },
-  clearMsg(state) {
-    state.msgData = []
-  },
+  // pushMsg(state, data) {
+  //   if (data) {
+  //     if (data.constructor === Array) {
+  //       state.msgData.push(...data)
+  //     } else {
+  //       state.msgData.push(data)
+  //     }
+  //   }
+  // },
   setCurSelected(state, info) {
     state.curSelected = info
   },

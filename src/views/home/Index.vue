@@ -181,40 +181,40 @@ export default {
     },
     chat(msg, route) {
       if (this.$store.state.curSelected && this.$store.state.curSelected.id === msg.sender.id) {
-        const pushData = {
-          self: false,
-          nickname: msg.sender.nickname,
-          uid: msg.sender.id,
-          avatar: msg.sender.avatar,
-          content: msg.content,
-          content_type: msg.content_type,
-          timeline: msg.time
-        }
-        this.$store.commit('pushMsg', pushData)
+        //
       }
       this.recordAlive(msg, route)
       this.recordMsg(msg)
     },
-    recordAlive(msg, route) {
+    recordAlive(msg, r) {
+      let aliveId = msg.sender.id
+      let name = msg.sender.nickname
+      let avatar = msg.sender.avatar
+      if (r === route.GROUP_MESSAGE) {
+        aliveId = msg.receiver.id
+        name = msg.receiver.nickname
+        avatar = msg.receiver.avatar
+      }
       const aliveList = this.$store.state.aliveList
       let unread
       if (
         // JSON.stringify(aliveList) == "{}" ||
-        !aliveList[msg.sender.id] ||
-        isNaN(parseInt(aliveList[msg.sender.id].unread))
+        !aliveList[aliveId] ||
+        isNaN(parseInt(aliveList[aliveId].unread))
       ) {
         unread = 1
       } else {
-        unread = parseInt(aliveList[msg.sender.id].unread) + 1
+        unread = parseInt(aliveList[aliveId].unread) + 1
       }
-      aliveList[msg.sender.id] = {
-        id: msg.sender.id,
-        nickname: msg.sender.nickname,
-        avatar: msg.sender.avatar,
+
+      aliveList[aliveId] = {
+        id: msg.aliveId,
+        nickname: name,
+        avatar: avatar,
         last_msg: msg.content,
         last_time: this.common.getCurTime(1),
         unread: unread,
-        route: route
+        route: r
       }
       this.$store.commit('setAliveList', aliveList)
     },

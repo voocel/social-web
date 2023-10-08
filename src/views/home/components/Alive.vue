@@ -91,7 +91,7 @@ export default {
         route: uinfo.route
       })
       this.$store.commit('hasNewMsg')
-      this.clearUnread(uinfo.to_id)
+      this.clearUnread(uinfo.id)
     },
     // 清空未读消息数
     clearUnread(toUid) {
