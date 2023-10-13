@@ -154,6 +154,8 @@ export default {
           })
           break
         case route.MESSAGE:
+          this.groupMessage()
+          break
         case route.GROUP_MESSAGE:
           console.log(json.data)
           this.chat(json.data, json.route)
@@ -185,6 +187,9 @@ export default {
       }
       this.recordAlive(msg, route)
       this.recordMsg(msg)
+    },
+    groupMessage(msg) {
+      this.recordGroupMsg(msg)
     },
     recordAlive(msg, r) {
       let aliveId = msg.sender.id
@@ -226,6 +231,19 @@ export default {
         uid: userInfo.uid,
         nickname: msg.sender.nickname,
         avatar: msg.sender.avatar,
+        content: msg.content,
+        content_type: msg.content_type,
+        timeline: this.common.getCurTime()
+      })
+      this.$store.commit('hasNewMsg')
+    },
+    recordGroupMsg(msg) {
+      idb().addObject('msg-group', {
+        self: false,
+        sender_id: msg.sender.id,
+        group_id: msg.receiver_id,
+        name: msg.receiver.name,
+        avatar: msg.receiver.avatar,
         content: msg.content,
         content_type: msg.content_type,
         timeline: this.common.getCurTime()
