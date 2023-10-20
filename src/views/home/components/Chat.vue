@@ -300,7 +300,7 @@ export default {
     .action {
       height: 40px;
       line-height: 40px;
-      background: rgb(238, 238, 237);
+      background: rgb(233, 233, 219);
       text-align: left;
       span {
         cursor: pointer;
