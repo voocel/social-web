@@ -125,11 +125,6 @@ export default {
     border-bottom: 1px #f6f6f6 solid;
     .avatar {
       margin-left: 8px;
-      // img {
-      //   width: 40px;
-      //   height: 40px;
-      //   margin-left: 8px;
-      // }
     }
     .custom-img{
       border-radius: 50%;
