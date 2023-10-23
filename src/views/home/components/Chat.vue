@@ -210,6 +210,9 @@ export default {
       idb().findObject('msg', condition).then((data) => {
         this.msgDatas = data
       })
+      idb().findObject('msg-group', condition).then((data) => {
+        this.msgDatas = data
+      })
     },
     recordMsg(content, content_type, toUid) {
       idb().addObject('msg', {
