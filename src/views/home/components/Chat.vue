@@ -79,7 +79,7 @@ import ChatBox from '@/components/ChatBox'
 // import Icon from "@/components/Icon";
 import Emoji from '@/components/Emoji'
 import storage from '@/common/storage'
-import { route, contentType } from '@/utils/message'
+import { route, contentType, targetType } from '@/utils/message'
 import idb from '@/store/idb'
 
 var userInfo = JSON.parse(storage.get(storage.USER_INFO))
@@ -180,39 +180,44 @@ export default {
         return
       }
 
-      const toInfo = this.$store.state.curSelected
-      if (!toInfo) {
+      const selected = this.$store.state.curSelected
+      if (!selected) {
         this.$message.error('请先选择要发送的对象')
         return
       }
       const sendData = {
         sender: { id: parseInt(userInfo.uid) },
-        receiver: { id: parseInt(toInfo.id) },
+        receiver: { id: parseInt(selected.id) },
         content: this.inputData,
         content_type: contentType.TEXT
       }
-      this.$emit('childSend', toInfo.route, sendData)
-      this.recordMsg(this.inputData, contentType.TEXT, toInfo.id)
-      this.recordAlive(toInfo, this.inputData)
+      this.$emit('childSend', selected.route, sendData)
+      this.recordMsg(this.inputData, contentType.TEXT, selected.id)
+      this.recordAlive(selected, this.inputData)
       this.inputData = ''
+
+      this.loadLocalMsg(selected)
     },
     // 聚焦输入框
     focusTxtContent() {
       document.querySelector('#txtContent input').focus()
     },
-    loadLocalMsg() {
+    loadLocalMsg(selected) {
       const condition = {
         where: (object) => {
           if (object.sender_id === userInfo.uid && object.receiver_id === this.selectedUser.id) return true
           if (object.receiver_id === userInfo.uid && object.sender_id === this.selectedUser.id) return true
         }
       }
-      idb().findObject('msg', condition).then((data) => {
-        this.msgDatas = data
-      })
-      idb().findObject('msg-group', condition).then((data) => {
-        this.msgDatas = data
-      })
+      if (selected.target_type === targetType.USER) {
+        idb().findObject('msg', condition).then((data) => {
+          this.msgDatas = data
+        })
+      } else {
+        idb().findObject('msg-group', condition).then((data) => {
+          this.msgDatas = data
+        })
+      }
     },
     recordMsg(content, content_type, toUid) {
       idb().addObject('msg', {
@@ -226,7 +231,6 @@ export default {
         content_type: content_type,
         timeline: this.common.getCurTime()
       })
-      this.loadLocalMsg()
     },
     recordAlive(toInfo, lasgMsg) {
       let aliveList = this.$store.state.aliveList

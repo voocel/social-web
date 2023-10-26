@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { route } from '@/utils/message'
+import { route, targetType } from '@/utils/message'
 export default {
   name: 'Group',
   props: {
@@ -53,6 +53,7 @@ export default {
     selectGroup(index, info) {
       this.activeClass = index
       this.$store.commit('setCurSelected', {
+        target_type: targetType.GROUP,
         id: info.id,
         nickname: info.name,
         avatar: info.avatar,

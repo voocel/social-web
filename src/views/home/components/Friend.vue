@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { route } from '@/utils/message'
+import { route, targetType } from '@/utils/message'
 export default {
   name: 'Friend',
   props: {
@@ -53,6 +53,7 @@ export default {
     selectFriend(index, uinfo) {
       this.activeClass = index
       this.$store.commit('setCurSelected', {
+        target_type: targetType.USER,
         id: uinfo.friend_id,
         nickname: uinfo.nickname,
         avatar: uinfo.avatar,

@@ -16,6 +16,11 @@ const contentType = {
   'VIDEO': 5
 }
 
+const targetType = {
+  'USER': 1,
+  'GROUP': 2
+}
+
 // message = seq(2byte)+route(4byte)+data
 // decodeURIComponent(escape(String.fromCharCode.apply(null, ab)))
 const message = {
@@ -54,4 +59,4 @@ const message = {
   }
 }
 
-export { message, route, contentType }
+export { message, route, contentType, targetType }
