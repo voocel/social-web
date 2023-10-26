@@ -15,7 +15,7 @@ const config = {
     //   {
     //     sender_id: 1,
     //     receiver_id: 2,
-    //     nickname: 'xxx',
+    //     name: 'xxx',
     //     avatar: 'xxx',
     //     concent: 'xxx',
     //     content_type: 1,

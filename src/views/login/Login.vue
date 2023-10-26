@@ -57,7 +57,6 @@ export default {
                 const data = {
                   uid: result.data.id,
                   username: result.data.username,
-                  nickname: result.data.nickname,
                   avatar: result.data.avatar
                 }
                 storage.set(storage.USER_INFO, JSON.stringify(data))

@@ -17,7 +17,7 @@
                     <avatar
                       :size="36"
                       :lighten="60"
-                      :username="item.nickname"
+                      :username="item.name"
                     />
                   </div>
                   <div v-else>
@@ -29,7 +29,7 @@
                 <div class="content">
                   <el-row>
                     <el-col :span="20">
-                      <div class="nickname">{{ item.nickname }}</div>
+                      <div class="name">{{ item.name }}</div>
                     </el-col>
                     <el-col :span="4">
                       <div class="latest">{{ item.last_time }}</div>
@@ -86,7 +86,7 @@ export default {
       this.$store.commit('setCurSelected', {
         index: index,
         id: uinfo.id,
-        nickname: uinfo.nickname,
+        name: uinfo.name,
         avatar: uinfo.avatar,
         route: uinfo.route
       })
@@ -133,7 +133,7 @@ export default {
       line-height: 30px;
       color: #9c9c9c;
       font-size: 12px;
-      .nickname {
+      .name {
         color: #000;
         font-size: 14px;
       }

@@ -16,7 +16,7 @@
                   <avatar
                     :size="40"
                     :lighten="60"
-                    :username="item.nickname"
+                    :username="item.name"
                   />
                 </div>
                 <div v-else>
@@ -25,7 +25,7 @@
               </div>
             </el-col>
             <el-col :span="20">
-              <div class="nickname">{{ item.nickname }}</div>
+              <div class="name">{{ item.name }}</div>
             </el-col>
           </el-row>
         </li>
@@ -55,7 +55,7 @@ export default {
       this.$store.commit('setCurSelected', {
         target_type: targetType.USER,
         id: uinfo.friend_id,
-        nickname: uinfo.nickname,
+        name: uinfo.name,
         avatar: uinfo.avatar,
         route: route.MESSAGE
       })
@@ -96,7 +96,7 @@ export default {
         margin-top: 10px;
       }
     }
-    .nickname {
+    .name {
       line-height: 60px;
       color: #676767;
       font-size: 16px;

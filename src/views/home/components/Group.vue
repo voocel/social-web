@@ -55,7 +55,7 @@ export default {
       this.$store.commit('setCurSelected', {
         target_type: targetType.GROUP,
         id: info.id,
-        nickname: info.name,
+        name: info.name,
         avatar: info.avatar,
         route: route.GROUP_MESSAGE
       })

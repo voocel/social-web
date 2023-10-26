@@ -2,7 +2,7 @@
   <div>
     <el-container direction="vertical">
       <el-header>
-        <div class="to-name">{{ selectedUser['nickname'] }}</div>
+        <div class="to-name">{{ selectedUser['name'] }}</div>
       </el-header>
       <el-main v-chat-scroll>
         <chat-box :msg-datas="records" />
@@ -95,7 +95,6 @@ export default {
     return {
       msgDatas: [],
       inputData: '',
-      curChatNickname: '',
       showEmoji: { f: false }
     }
   },
@@ -225,7 +224,7 @@ export default {
         sender_id: userInfo.uid,
         receiver_id: toUid,
         uid: userInfo.uid,
-        nickname: userInfo.nickname,
+        name: userInfo.name,
         avatar: userInfo.avatar,
         content: content,
         content_type: content_type,
@@ -240,7 +239,7 @@ export default {
       }
       aliveList[toInfo.id] = {
         id: toInfo.id,
-        nickname: toInfo.nickname,
+        name: toInfo.name,
         avatar: toInfo.avatar,
         last_msg: lasgMsg,
         last_time: this.common.getCurTime(1),

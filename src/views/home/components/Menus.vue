@@ -51,7 +51,6 @@ export default {
     return {
       isCollapse: true,
       showCutter: false,
-      nickname: userInfo.nickname,
       avatarSrc: ''
     }
   },

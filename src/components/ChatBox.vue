@@ -6,12 +6,12 @@
         <div v-if="item.self">
           <div class="msg-from self-msg-from">
             <span class="loc">[北京]</span>
-            <span class="msg-author">{{ item.nickname }}</span>
+            <span class="msg-author">{{ item.name }}</span>
             <avatar
               v-if="!avatarSrc"
               :size="36"
               :lighten="60"
-              :username="item.nickname"
+              :username="item.name"
             />
             <img v-else class="uinfo-avatar" :src="avatarSrc" alt>
           </div>
@@ -31,10 +31,10 @@
               v-if="!item.avatar"
               :size="36"
               :lighten="60"
-              :username="item.nickname"
+              :username="item.name"
             />
             <img v-else class="uinfo-avatar" :src="item.avatar" alt>
-            <span class="msg-author">{{ item.nickname }}</span>
+            <span class="msg-author">{{ item.name }}</span>
             <span class="loc">[上海]</span>
           </div>
           <div class="clear" />

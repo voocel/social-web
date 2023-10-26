@@ -7,7 +7,7 @@
             v-if="!avatarSrc"
             :size="45"
             :lighten="60"
-            :username="nickname"
+            :username="name"
           />
           <img v-else class="uinfo-avatar" :src="avatarSrc" alt>
           <div :class="[isOnline === true ? 'online' : 'offline']" />
@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       showCutter: false,
-      nickname: userInfo.nickname,
+      name: userInfo.name,
       avatarSrc: ''
     }
   },

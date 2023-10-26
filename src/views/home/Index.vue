@@ -154,8 +154,6 @@ export default {
           })
           break
         case route.MESSAGE:
-          this.groupMessage()
-          break
         case route.GROUP_MESSAGE:
           console.log(json.data)
           this.chat(json.data, json.route)
@@ -186,18 +184,18 @@ export default {
         //
       }
       this.recordAlive(msg, route)
-      this.recordMsg(msg)
+      this.recordMsg(msg, route)
     },
     groupMessage(msg) {
       this.recordGroupMsg(msg)
     },
     recordAlive(msg, r) {
       let aliveId = msg.sender.id
-      let name = msg.sender.nickname
+      let name = msg.sender.name
       let avatar = msg.sender.avatar
       if (r === route.GROUP_MESSAGE) {
         aliveId = msg.receiver.id
-        name = msg.receiver.nickname
+        name = msg.receiver.name
         avatar = msg.receiver.avatar
       }
       const aliveList = this.$store.state.aliveList
@@ -214,7 +212,7 @@ export default {
 
       aliveList[aliveId] = {
         id: msg.aliveId,
-        nickname: name,
+        name: name,
         avatar: avatar,
         last_msg: msg.content,
         last_time: this.common.getCurTime(1),
@@ -223,27 +221,18 @@ export default {
       }
       this.$store.commit('setAliveList', aliveList)
     },
-    recordMsg(msg) {
+    recordMsg(msg, r) {
+      let targetId = userInfo.uid
+      if (r === route.GROUP_MESSAGE) {
+        targetId = msg.receiver_id
+      }
       idb().addObject('msg', {
         self: false,
         sender_id: msg.sender.id,
         receiver_id: userInfo.uid,
-        uid: userInfo.uid,
-        nickname: msg.sender.nickname,
+        target_id: targetId,
+        name: msg.sender.name,
         avatar: msg.sender.avatar,
-        content: msg.content,
-        content_type: msg.content_type,
-        timeline: this.common.getCurTime()
-      })
-      this.$store.commit('hasNewMsg')
-    },
-    recordGroupMsg(msg) {
-      idb().addObject('msg-group', {
-        self: false,
-        sender_id: msg.sender.id,
-        group_id: msg.receiver_id,
-        name: msg.receiver.name,
-        avatar: msg.receiver.avatar,
         content: msg.content,
         content_type: msg.content_type,
         timeline: this.common.getCurTime()

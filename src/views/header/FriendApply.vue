@@ -13,7 +13,7 @@
         </el-table-column>
         <el-table-column property="remark">
           <template slot-scope="scope">
-            <div style="font-size:15px;font-weight:bold">{{ scope.row.from_nickname }}</div>
+            <div style="font-size:15px;font-weight:bold">{{ scope.row.from_name }}</div>
             <div style="font-size:12px;color:silver;">{{ scope.row.remark }}</div>
           </template>
         </el-table-column>
