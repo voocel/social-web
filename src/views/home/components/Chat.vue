@@ -2,7 +2,7 @@
   <div>
     <el-container direction="vertical">
       <el-header>
-        <div class="to-name">{{ selectedUser['name'] }}</div>
+        <div class="to-name">{{ selected['name'] }}</div>
       </el-header>
       <el-main v-chat-scroll>
         <chat-box :msg-datas="records" />
@@ -105,7 +105,7 @@ export default {
     newMsg() {
       return this.$store.state.newMsg
     },
-    selectedUser() {
+    selected() {
       if (this.$store.state.curSelected) {
         return this.$store.state.curSelected
       } else {
@@ -141,20 +141,19 @@ export default {
               type: 'success'
             })
 
-            const toInfo = this.$store.state.curSelected
-            if (!toInfo) {
+            if (!this.selected) {
               this.$message.error('请先选择要发送的用户')
               return
             }
             const sendData = {
               sender: { id: parseInt(userInfo.uid) },
-              receiver: { id: parseInt(toInfo.id) },
+              receiver: { id: parseInt(this.selected.id) },
               content: res.data.data.url,
               content_type: contentType.IMAGE
             }
             this.$emit('childSend', route.MESSAGE, sendData)
-            this.recordMsg(res.data.data.url, contentType.IMAGE, toInfo.uid)
-            this.recordAlive(toInfo, '[图片]')
+            this.recordMsg(res.data.data.url, contentType.IMAGE, this.selected.id)
+            this.recordAlive('[图片]')
           } else {
             this.$message({
               message: res.data.message,
@@ -179,51 +178,59 @@ export default {
         return
       }
 
-      const selected = this.$store.state.curSelected
-      if (!selected) {
+      if (!this.selected) {
         this.$message.error('请先选择要发送的对象')
         return
       }
       const sendData = {
         sender: { id: parseInt(userInfo.uid) },
-        receiver: { id: parseInt(selected.id) },
+        receiver: { id: parseInt(this.selected.id) },
         content: this.inputData,
         content_type: contentType.TEXT
       }
-      this.$emit('childSend', selected.route, sendData)
-      this.recordMsg(this.inputData, contentType.TEXT, selected.id)
-      this.recordAlive(selected, this.inputData)
+      this.$emit('childSend', this.selected.route, sendData)
+      if (this.selected.target_type === targetType.GROUP) {
+        this.recordMsg(this.inputData, contentType.TEXT, this.selected.id, 'msg-group')
+      } else {
+        this.recordMsg(this.inputData, contentType.TEXT, this.selected.id, 'msg')
+      }
+      this.recordAlive(this.inputData)
       this.inputData = ''
 
-      this.loadLocalMsg(selected)
+      this.loadLocalMsg()
     },
     // 聚焦输入框
     focusTxtContent() {
       document.querySelector('#txtContent input').focus()
     },
-    loadLocalMsg(selected) {
-      const condition = {
-        where: (object) => {
-          if (object.sender_id === userInfo.uid && object.receiver_id === this.selectedUser.id) return true
-          if (object.receiver_id === userInfo.uid && object.sender_id === this.selectedUser.id) return true
+    loadLocalMsg() {
+      if (this.selected.target_type === targetType.USER) {
+        const condition = {
+          where: (object) => {
+            if (object.sender_id === userInfo.uid && object.receiver_id === this.selected.id) return true
+            if (object.receiver_id === userInfo.uid && object.sender_id === this.selected.id) return true
+          }
         }
-      }
-      if (selected.target_type === targetType.USER) {
         idb().findObject('msg', condition).then((data) => {
           this.msgDatas = data
         })
       } else {
+        const condition = {
+          where: (object) => {
+            if (object.target_id === this.selected.id) return true
+          }
+        }
         idb().findObject('msg-group', condition).then((data) => {
           this.msgDatas = data
         })
       }
     },
-    recordMsg(content, content_type, toUid) {
-      idb().addObject('msg', {
+    recordMsg(content, content_type, targetId, table) {
+      idb().addObject(table, {
         self: true,
         sender_id: userInfo.uid,
-        receiver_id: toUid,
-        uid: userInfo.uid,
+        receiver_id: targetId,
+        target_id: targetId,
         name: userInfo.name,
         avatar: userInfo.avatar,
         content: content,
@@ -231,20 +238,21 @@ export default {
         timeline: this.common.getCurTime()
       })
     },
-    recordAlive(toInfo, lasgMsg) {
+    recordAlive(lasgMsg) {
       let aliveList = this.$store.state.aliveList
       const unread = ''
       if (!aliveList) {
         aliveList = {}
       }
-      aliveList[toInfo.id] = {
-        id: toInfo.id,
-        name: toInfo.name,
-        avatar: toInfo.avatar,
+      aliveList[this.selected.id] = {
+        target_type: this.selected.target_type,
+        id: this.selected.id,
+        name: this.selected.name,
+        avatar: this.selected.avatar,
         last_msg: lasgMsg,
         last_time: this.common.getCurTime(1),
         unread: unread,
-        route: toInfo.route
+        route: this.selected.route
       }
       this.$store.commit('setAliveList', aliveList)
     },
