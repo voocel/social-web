@@ -8,6 +8,12 @@ const config = {
       index: [ // 索引 ， unique 是否可以重复
         // { name: 'uid', unique: false }
       ]
+    },
+    {
+      objectStoreName: 'msg-group',
+      index: [ // 索引 ， unique 是否可以重复
+        // { name: 'uid', unique: false }
+      ]
     }
   ],
   objects: { // 初始化数据

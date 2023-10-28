@@ -32,7 +32,7 @@ import Menus from './components/Menus'
 import Headers from '../header/Header'
 import LeftNav from './components/LeftNav'
 import tips from '@/utils/tips'
-import { message, route } from '@/utils/message'
+import { message, route, targetType } from '@/utils/message'
 import storage from '@/common/storage'
 import idb from '@/store/idb'
 
@@ -184,19 +184,22 @@ export default {
         //
       }
       this.recordAlive(msg, route)
-      this.recordMsg(msg, route)
-    },
-    groupMessage(msg) {
-      this.recordGroupMsg(msg)
+      if (route === route.GROUP_MESSAGE) {
+        this.recordMsg(msg, msg.receiver_id, 'msg-group')
+      } else {
+        this.recordMsg(msg, userInfo.uid, 'msg')
+      }
     },
     recordAlive(msg, r) {
       let aliveId = msg.sender.id
       let name = msg.sender.name
       let avatar = msg.sender.avatar
+      let tt = targetType.USER
       if (r === route.GROUP_MESSAGE) {
         aliveId = msg.receiver.id
         name = msg.receiver.name
         avatar = msg.receiver.avatar
+        tt = targetType.GROUP
       }
       const aliveList = this.$store.state.aliveList
       let unread
@@ -211,7 +214,8 @@ export default {
       }
 
       aliveList[aliveId] = {
-        id: msg.aliveId,
+        target_type: tt,
+        id: aliveId,
         name: name,
         avatar: avatar,
         last_msg: msg.content,
@@ -221,12 +225,8 @@ export default {
       }
       this.$store.commit('setAliveList', aliveList)
     },
-    recordMsg(msg, r) {
-      let targetId = userInfo.uid
-      if (r === route.GROUP_MESSAGE) {
-        targetId = msg.receiver_id
-      }
-      idb().addObject('msg', {
+    recordMsg(msg, targetId, table) {
+      idb().addObject(table, {
         self: false,
         sender_id: msg.sender.id,
         receiver_id: userInfo.uid,
