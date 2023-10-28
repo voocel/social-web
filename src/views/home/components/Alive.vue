@@ -58,7 +58,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'Alive',
   data() {
@@ -80,18 +79,18 @@ export default {
     }
   },
   methods: {
-    selectUser(index, uinfo) {
+    selectUser(index, alive) {
       this.activeClass = index
-      this.$store.commit('hasNewMsg')
       this.$store.commit('setCurSelected', {
+        target_type: alive.target_type,
         index: index,
-        id: uinfo.id,
-        name: uinfo.name,
-        avatar: uinfo.avatar,
-        route: uinfo.route
+        id: alive.id,
+        name: alive.name,
+        avatar: alive.avatar,
+        route: alive.route
       })
       this.$store.commit('hasNewMsg')
-      this.clearUnread(uinfo.id)
+      this.clearUnread(alive.id)
     },
     // 清空未读消息数
     clearUnread(toUid) {
