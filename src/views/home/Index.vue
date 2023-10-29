@@ -124,10 +124,10 @@ export default {
       }, this.timeout)
     },
     onMessage(e) {
-      const json = message.unpack(e.data)
-      console.log(json)
-      if (json.route !== route.HEARBEAT) console.log(json)
-      switch (json.route) {
+      const result = message.unpack(e.data)
+      console.log(result)
+      if (result.route !== route.HEARBEAT) console.log(result)
+      switch (result.route) {
         case route.AUTH:
           setTimeout(() => {
             tips.reLoginTip()
@@ -135,34 +135,33 @@ export default {
 
           return
         case route.CONNECT:
-          console.log('connect successfully!')
           this.$message({
             showClose: true,
-            message: json.data.msg,
+            message: result.data.msg,
             duration: 3000,
-            type: 'success'
+            type: 'connect successfully!'
           })
           break
         case route.SYSTEM:
-          this.sysmsg = json.data.content
+          this.sysmsg = result.data.content
           this.$message({
             showClose: true,
-            message: json.data.msg,
+            message: result.data.msg,
             duration: 3000,
             type: 'success'
           })
           break
         case route.MESSAGE:
         case route.GROUP_MESSAGE:
-          console.log(json.data)
-          this.chat(json.data, json.route)
+          console.log(result.data)
+          this.chat(result.data, result.route)
           break
         case route.HEARBEAT:
           break
         default:
           this.$message({
             showClose: true,
-            message: json,
+            message: result,
             duration: 3000,
             type: 'error'
           })
