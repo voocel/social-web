@@ -62,10 +62,10 @@ export default {
       this.$store.commit('hasNewMsg')
       this.clearUnread(info.id)
     },
-    clearUnread(toUid) {
+    clearUnread(aliveId) {
       const aliveList = this.$store.state.aliveList
-      if (aliveList[toUid]) {
-        aliveList[toUid].unread = ''
+      if (aliveList[aliveId]) {
+        aliveList[aliveId].unread = ''
         this.$store.commit('setAliveList', aliveList)
       }
     }

@@ -483,7 +483,6 @@ const indexedDB = () => {
         }
       }
     }
-    console.log('findObject - keyRange', keyRange)
 
     const objectPromise = new Promise((resolve, reject) => {
       // 定义个函数，便于调用

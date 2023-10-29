@@ -124,7 +124,6 @@ export default {
       }, this.timeout)
     },
     onMessage(e) {
-      console.log(e)
       const json = message.unpack(e.data)
       console.log(json)
       if (json.route !== route.HEARBEAT) console.log(json)
