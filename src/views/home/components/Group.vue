@@ -20,7 +20,7 @@
                   />
                 </div>
                 <div v-else>
-                  <img height="40" width="40" :src="item.avatar" alt="">
+                  <img :src="item.avatar" alt="">
                 </div>
               </div>
             </el-col>
