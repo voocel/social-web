@@ -20,7 +20,7 @@
                   />
                 </div>
                 <div v-else>
-                  <img height="40" width="40" :src="item.avatar" alt="">
+                  <img :src="item.avatar" alt="">
                 </div>
               </div>
             </el-col>
@@ -89,6 +89,8 @@ export default {
     .avatar {
       margin-left: 8px;
       img {
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
       }
       .avatar-default {
