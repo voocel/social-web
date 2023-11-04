@@ -153,7 +153,6 @@ export default {
           break
         case route.MESSAGE:
         case route.GROUP_MESSAGE:
-          console.log(result.data)
           this.chat(result.data, result.route)
           break
         case route.HEARBEAT:
