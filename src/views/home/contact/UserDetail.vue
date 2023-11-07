@@ -57,7 +57,7 @@
 
 <script>
 export default {
-  name: 'Home',
+  name: 'UserDetail',
   components: {},
   props: {
     user: {
