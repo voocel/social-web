@@ -37,12 +37,27 @@
           </li>
         </ul>
       </div>
+      <div class="footer">
+        <div class="action" @click="chat">
+          <i class="icon-ion-ios-chatboxes-outline" />
+          <a>发消息</a>
+        </div>
+        <div class="action" @click="startAudioCall">
+          <i class="icon-ion-ios-telephone-outline" />
+          <a>语音通话</a>
+        </div>
+        <div class="action" @click="startVideoCall">
+          <i class="icon-ion-ios-videocam-outline" />
+          <a>视频通话</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  name: 'Home',
   components: {},
   props: {
     user: {
@@ -165,4 +180,27 @@ export default {
   flex: 1;
 }
 
+.footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+}
+
+.footer .action {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  color: #5d7ce8;
+}
+
+.footer .action a {
+  font-size: 10px;
+  padding-top: 1px;
+}
+
+.footer .action i {
+  font-size: 20px;
+}
 </style>
