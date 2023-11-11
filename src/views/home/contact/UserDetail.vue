@@ -2,8 +2,11 @@
   <div class="container">
     <div class="user-header-content-container">
       <div class="header">
-        <div>
+        <div v-if="user.avatar == ''">
           <avatar :size="40" :lighten="60" :username="user.name" />
+        </div>
+        <div v-else>
+          <img :src="user.avatar" alt="">
         </div>
         <div class="name">
           <h2>{{ user.name }}</h2>
