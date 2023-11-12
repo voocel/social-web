@@ -32,7 +32,7 @@
           </li>
           <li>
             <label>地区</label>
-            <p v-if="user.avatar == ''">未知</p>
+            <p v-if="user.addr == ''">未知</p>
             <p v-else>{{ user.addr }}</p>
           </li>
           <li>
