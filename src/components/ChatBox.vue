@@ -5,7 +5,7 @@
         <div class="msg-date">{{ item.timeline }}</div>
         <div v-if="item.self">
           <div class="msg-from self-msg-from">
-            <span class="loc">[北京]</span>
+            <span class="loc">[{{ item.location }}]</span>
             <span class="msg-author">{{ item.name }}</span>
             <avatar
               v-if="!avatarSrc"
@@ -35,7 +35,7 @@
             />
             <img v-else class="uinfo-avatar" :src="item.avatar" alt>
             <span class="msg-author">{{ item.name }}</span>
-            <span class="loc">[上海]</span>
+            <span class="loc">[{{ item.location }}]</span>
           </div>
           <div class="clear" />
           <el-image
